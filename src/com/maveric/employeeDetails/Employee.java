@@ -8,10 +8,9 @@ public class Employee {
 	private String employeeName;
 	private String clientName;
 	private String projectName;
-	private String subProject;
 	private String status;
-	private int totalWorkingHours;
-	private int totalNonWorkingHours;
+	private double totalWorkingHours;
+	private double totalNonWorkingHours;
 	private ArrayList<TimeAndWorkLocation> timeAndWorkLocation;
 
 	
@@ -39,12 +38,7 @@ public class Employee {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-	public String getSubProject() {
-		return subProject;
-	}
-	public void setSubProject(String subProject) {
-		this.subProject = subProject;
-	}
+	
 	public String getStatus() {
 		return status;
 	}
@@ -57,13 +51,13 @@ public class Employee {
 	public void setTimeAndWorkLocation(ArrayList<TimeAndWorkLocation> timeAndWorkLocation) {
 		this.timeAndWorkLocation = timeAndWorkLocation;
 	}
-	public int getTotalWorkingHours() {
+	public double getTotalWorkingHours() {
 		return totalWorkingHours;
 	}
 	public void setTotalWorkingHours(int totalWorkingHours) {
 		this.totalWorkingHours = totalWorkingHours;
 	}
-	public int getTotalNonWorkingHours() {
+	public double getTotalNonWorkingHours() {
 		return totalNonWorkingHours;
 	}
 	public void setTotalNonWorkingHours(int totalNonWorkingHours) {

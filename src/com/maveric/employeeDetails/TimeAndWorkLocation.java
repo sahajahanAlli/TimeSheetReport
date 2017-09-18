@@ -7,7 +7,14 @@ public class TimeAndWorkLocation {
 	private String currentCity;
 	private String activityDate;
 	private String duration;
+	private String subProject;
 	
+	public String getSubProject() {
+		return subProject;
+	}
+	public void setSubProject(String subProject) {
+		this.subProject = subProject;
+	}
 	public String getWorkLocation() {
 		return workLocation;
 	}
