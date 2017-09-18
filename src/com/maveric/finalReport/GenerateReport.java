@@ -83,6 +83,7 @@ public class GenerateReport {
 		        		  emp.setSubProject(row.getCell(6).toString());
 		        		  emp.setStatus(row.getCell(13).toString());
 		        		  
+		        		  timeWorkdetails.setActivity(row.getCell(8).toString());
 		        		  timeWorkdetails.setWorkLocation(row.getCell(9).toString());
 		        		  timeWorkdetails.setCurrentCity(row.getCell(10).toString());
 		        		  timeWorkdetails.setActivityDate(row.getCell(11).toString());
@@ -93,6 +94,7 @@ public class GenerateReport {
 		        		   
 		        		  }
 		        		  
+		        		  timeWorkdetails.setActivity(row.getCell(8).toString());
 		        		  timeWorkdetails.setWorkLocation(row.getCell(9).toString());
 		        		  timeWorkdetails.setCurrentCity(row.getCell(10).toString());
 		        		  timeWorkdetails.setActivityDate(row.getCell(11).toString());
@@ -115,6 +117,8 @@ public class GenerateReport {
 				while (employeeiterator.hasNext()) {
 					e=new Employee();
 					e=employeeiterator.next();
+					int totalworkinghours=0;
+					int totalNonworkinghours=0;
 					System.out.println(e.getEmployeeId() + " "+e.getEmployeeName()+ " "+e.getClientName()+" "+e.getProjectName()+" "+e.getStatus());
 				
 					Iterator<TimeAndWorkLocation> twiterator = e.getTimeAndWorkLocation().iterator();
@@ -122,8 +126,16 @@ public class GenerateReport {
 					while (twiterator.hasNext()) {
 						tw=new TimeAndWorkLocation();
 						tw=twiterator.next();
-						System.out.println(tw.getWorkLocation()+" "+tw.getCurrentCity()+" "+tw.getActivityDate()+" "+tw.getDuration());
-				       }
+						System.out.println(tw.getActivity()+" "+tw.getWorkLocation()+" "+tw.getCurrentCity()+" "+tw.getActivityDate()+" "+tw.getDuration());
+				      if( tw.getActivity() != "Holiday" && tw.getActivity() != "Leave"){
+				    	  totalworkinghours+=Integer.parseInt(tw.getDuration());
+				      }else{
+				    	  totalNonworkinghours = Integer.parseInt(tw.getDuration());
+				      }
+						
+					}
+					e.setTotalWorkingHours(totalworkinghours);
+					e.setTotalNonWorkingHours(totalNonworkinghours);
 			     }
 			 
 		 }catch(Exception e){

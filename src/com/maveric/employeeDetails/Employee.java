@@ -10,6 +10,8 @@ public class Employee {
 	private String projectName;
 	private String subProject;
 	private String status;
+	private int totalWorkingHours;
+	private int totalNonWorkingHours;
 	private ArrayList<TimeAndWorkLocation> timeAndWorkLocation;
 
 	
@@ -54,6 +56,18 @@ public class Employee {
 	}
 	public void setTimeAndWorkLocation(ArrayList<TimeAndWorkLocation> timeAndWorkLocation) {
 		this.timeAndWorkLocation = timeAndWorkLocation;
+	}
+	public int getTotalWorkingHours() {
+		return totalWorkingHours;
+	}
+	public void setTotalWorkingHours(int totalWorkingHours) {
+		this.totalWorkingHours = totalWorkingHours;
+	}
+	public int getTotalNonWorkingHours() {
+		return totalNonWorkingHours;
+	}
+	public void setTotalNonWorkingHours(int totalNonWorkingHours) {
+		this.totalNonWorkingHours = totalNonWorkingHours;
 	}
 	
 

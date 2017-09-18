@@ -2,6 +2,7 @@ package com.maveric.employeeDetails;
 
 public class TimeAndWorkLocation {
 	
+	private String activity;
 	private String workLocation;
 	private String currentCity;
 	private String activityDate;
@@ -30,6 +31,12 @@ public class TimeAndWorkLocation {
 	}
 	public void setDuration(String duration) {
 		this.duration = duration;
+	}
+	public String getActivity() {
+		return activity;
+	}
+	public void setActivity(String activity) {
+		this.activity = activity;
 	}
 
 }
