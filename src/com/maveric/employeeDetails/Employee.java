@@ -8,7 +8,6 @@ public class Employee {
 	private String employeeName;
 	private String clientName;
 	private String projectName;
-	private String status;
 	private double totalWorkingHours;
 	private double totalNonWorkingHours;
 	private ArrayList<TimeAndWorkLocation> timeAndWorkLocation;
@@ -37,13 +36,6 @@ public class Employee {
 	}
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
-	}
-	
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
 	}
 	public ArrayList<TimeAndWorkLocation> getTimeAndWorkLocation() {
 		return timeAndWorkLocation;

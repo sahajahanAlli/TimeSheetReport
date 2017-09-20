@@ -87,7 +87,6 @@ public class InitializeEmployeeDetails {
 		        		  emp.setEmployeeName(row.getCell(2).toString());
 		        		  emp.setClientName(row.getCell(4).toString());
 		        		  emp.setProjectName(row.getCell(5).toString());
-		        		  emp.setStatus(row.getCell(13).toString());
 		        		  empFlag=false;
 		       		   
 		        		  }
@@ -98,6 +97,7 @@ public class InitializeEmployeeDetails {
 		        		  timeWorkdetails.setCurrentCity(row.getCell(10).toString());
 		        		  timeWorkdetails.setActivityDate(row.getCell(11).toString());
 		        		  timeWorkdetails.setDuration(row.getCell(12).toString());
+		        		  timeWorkdetails.setStatus(row.getCell(13).toString());
 		        		  timeWork.add(timeWorkdetails);
 		        	  }
 		         }
@@ -128,7 +128,7 @@ public class InitializeEmployeeDetails {
 				e=employeeiterator.next();
 				int totalworkinghours=0;
 				int totalNonworkinghours=0;
-				System.out.println(e.getEmployeeId() + " "+e.getEmployeeName()+ " "+e.getClientName()+" "+e.getProjectName()+" "+e.getStatus());
+				System.out.println(e.getEmployeeId() + " "+e.getEmployeeName()+ " "+e.getClientName()+" "+e.getProjectName());
 			
 				Iterator<TimeAndWorkLocation> twiterator = e.getTimeAndWorkLocation().iterator();
 				TimeAndWorkLocation tw=null;
@@ -153,28 +153,55 @@ public class InitializeEmployeeDetails {
 	public void checkAndValidateHours(ArrayList<Employee> al){
 		
 		HashMap<String,String> subProject=null; 
+		HashMap<String,Double> hourInsubProject=null;
 		HashMap<String,Double> datesOn=null; 
 		Iterator<Employee> employeeiterator = al.iterator();
 		 Employee e=null;
 		 
 			while (employeeiterator.hasNext()) {
 				subProject=new HashMap<String,String>(); 
+				hourInsubProject=new HashMap<String,Double>(); 
 				datesOn=new HashMap<String,Double>(); 
 				e=new Employee();
 				e=employeeiterator.next();
 				Iterator<TimeAndWorkLocation> twiterator = e.getTimeAndWorkLocation().iterator();
 				TimeAndWorkLocation tw=null;
+				String massage="";
 				
 				while (twiterator.hasNext()) {
 					tw=new TimeAndWorkLocation();
 					tw=twiterator.next();
 					subProject.put(tw.getSubProject(), e.getEmployeeId());
 					
+					//checking the hours in a day
+					if(tw.getStatus().equals("Approved")){
 					if(datesOn.containsKey(tw.getActivityDate())){
 					datesOn.put(tw.getActivityDate(), datesOn.get(tw.getActivityDate())+Double.parseDouble(tw.getDuration()));
 					}else{
 						datesOn.put(tw.getActivityDate(), Double.parseDouble(tw.getDuration()));
 					}
+				  }
+					
+					//onsite and offshore hours
+					
+					if(tw.getWorkLocation().equals("Maveric Premises")){
+						
+						if(hourInsubProject.containsKey(tw.getSubProject()+"-offshore")){
+							hourInsubProject.put(tw.getSubProject()+"-offshore", hourInsubProject.get(tw.getSubProject()+"-offshore")+Double.parseDouble(tw.getDuration()));
+							}else{
+								hourInsubProject.put(tw.getSubProject()+"-offshore", Double.parseDouble(tw.getDuration()));
+							}
+						
+					}else{
+						
+						if(hourInsubProject.containsKey(tw.getSubProject()+"-onsite")){
+							hourInsubProject.put(tw.getSubProject()+"-onsite", hourInsubProject.get(tw.getSubProject()+"-onsite")+Double.parseDouble(tw.getDuration()));
+							}else{
+								hourInsubProject.put(tw.getSubProject()+"-onsite", Double.parseDouble(tw.getDuration()));
+							}
+						
+					}
+					
 				}
 				
 				System.out.println("For Employee "+e.getEmployeeName()+ "Sub Projects are ");
@@ -182,16 +209,23 @@ public class InitializeEmployeeDetails {
 		        	   System.out.println(m.getKey()+" "+m.getValue());  
 		        	  }
 				 
-				 for(@SuppressWarnings("rawtypes") Map.Entry<String,Double> m:datesOn.entrySet()){  
-		        	  // System.out.println(m.getKey()+" "+m.getValue());  
-					 if( m.getValue() <= 8){
-						 System.out.println("Valid Values");
+				 for(@SuppressWarnings("rawtypes") Map.Entry<String,Double> m:datesOn.entrySet()){   
+					 if( m.getValue() > 8){
+						 massage+="Error : "+e.getEmployeeName() +" has an mismatch in effort on "+m.getKey()+" hours is : "+m.getValue() + " is more than actual hours";
+						// System.out.println("Error : "+e.getEmployeeName() +" has an mismatch in effort on "+m.getKey()+" hours is : "+m.getValue() + " is more than actual hours");
+					 }else if(m.getValue() < 8){
+						 massage+="Warning : "+e.getEmployeeName()+" has an mismatch in effort on  "+m.getKey()+" hours is : "+m.getValue()+" is less than actual hours";
+						// System.out.println("Warning : "+e.getEmployeeName()+" has an mismatch in effort on  "+m.getKey()+" hours is : "+m.getValue()+" is less than actual hours");
 					 }else{
-						 System.out.println("inValid Values------------------------------------------");
+						 
 					 }
+					
 		        	  }
+				 System.out.println(massage);
 				 
-				
+				 for(@SuppressWarnings("rawtypes") Map.Entry m:hourInsubProject.entrySet()){  
+		        	   System.out.println(m.getKey()+" "+m.getValue());  
+		        	  }
 				
 		     }
 			
