@@ -1,8 +1,10 @@
 package com.maveric.finalReport;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.maveric.employeeDetails.Employee;
+import com.maveric.employeeDetails.FinalBillingClass;
 import com.maveric.employeeDetails.InitializeEmployeeDetails;
 
 
@@ -16,8 +18,16 @@ public class GenerateReport {
 		InitializeEmployeeDetails ied=new InitializeEmployeeDetails();
 		ArrayList<Employee> al=ied.createEmployeeDetails(ied.createEmployeeMap(filePath), filePath);
 		ied.displayData(al);
-		ied.checkAndValidateHours(al);
-		
+		ArrayList<FinalBillingClass> fbc=ied.checkAndValidateHours(al);
+		Iterator<FinalBillingClass>  billing= fbc.iterator();
+		FinalBillingClass fb=null;
+		while (billing.hasNext()) {
+			
+			fb=new FinalBillingClass();
+			fb=billing.next();
+			System.out.println(fb.getEmployeeId()+ " "+fb.getEmployeeName()+" "+fb.getSubProjectId() +" "+fb.getSubProjectName()+" "+fb.getTotalOnsiteDays()+" "+fb.getTotalOnsiteDays()+" "+fb.getErrMessage());
+			
+		}
 	}
 
 }

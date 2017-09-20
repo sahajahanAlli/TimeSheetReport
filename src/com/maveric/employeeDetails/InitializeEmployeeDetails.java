@@ -21,7 +21,7 @@ public class InitializeEmployeeDetails {
 	        FileInputStream inputStream=null;
 	        XSSFWorkbook wbk=null;
 	        Sheet sheet=null;
-	        
+	        System.out.println(filePath);
 			 try{ 
 		          file = new File (filePath);
 		          inputStream = new FileInputStream(file);
@@ -150,15 +150,20 @@ public class InitializeEmployeeDetails {
 		     }	 	
 	}
 	
-	public void checkAndValidateHours(ArrayList<Employee> al){
+	public ArrayList<FinalBillingClass> checkAndValidateHours(ArrayList<Employee> al){
 		
+		ArrayList<FinalBillingClass> fbc=new ArrayList<FinalBillingClass>();
 		HashMap<String,String> subProject=null; 
 		HashMap<String,Double> hourInsubProject=null;
 		HashMap<String,Double> datesOn=null; 
 		Iterator<Employee> employeeiterator = al.iterator();
-		 Employee e=null;
+		Employee e=null;
+		FinalBillingClass fb=null;
 		 
 			while (employeeiterator.hasNext()) {
+				
+				String Finalmessage=null;
+				fb=new FinalBillingClass();
 				subProject=new HashMap<String,String>(); 
 				hourInsubProject=new HashMap<String,Double>(); 
 				datesOn=new HashMap<String,Double>(); 
@@ -167,6 +172,8 @@ public class InitializeEmployeeDetails {
 				Iterator<TimeAndWorkLocation> twiterator = e.getTimeAndWorkLocation().iterator();
 				TimeAndWorkLocation tw=null;
 				String massage="";
+				Finalmessage+=e.getEmployeeId()+"  "+e.getEmployeeName();
+				
 				
 				while (twiterator.hasNext()) {
 					tw=new TimeAndWorkLocation();
@@ -174,16 +181,18 @@ public class InitializeEmployeeDetails {
 					subProject.put(tw.getSubProject(), e.getEmployeeId());
 					
 					//checking the hours in a day
-					if(tw.getStatus().equals("Approved")){
+					if(tw.getStatus().equals("Approved") || tw.getStatus().equals("Submitted") ){
+						if(!tw.getActivity().equals("Holiday")){
 					if(datesOn.containsKey(tw.getActivityDate())){
 					datesOn.put(tw.getActivityDate(), datesOn.get(tw.getActivityDate())+Double.parseDouble(tw.getDuration()));
 					}else{
 						datesOn.put(tw.getActivityDate(), Double.parseDouble(tw.getDuration()));
 					}
+					}
 				  }
 					
 					//onsite and offshore hours
-					
+					if(!tw.getSubProject().equals("")){
 					if(tw.getWorkLocation().equals("Maveric Premises")){
 						
 						if(hourInsubProject.containsKey(tw.getSubProject()+"-offshore")){
@@ -201,7 +210,7 @@ public class InitializeEmployeeDetails {
 							}
 						
 					}
-					
+					}
 				}
 				
 				System.out.println("For Employee "+e.getEmployeeName()+ "Sub Projects are ");
@@ -209,26 +218,40 @@ public class InitializeEmployeeDetails {
 		        	   System.out.println(m.getKey()+" "+m.getValue());  
 		        	  }
 				 
-				 for(@SuppressWarnings("rawtypes") Map.Entry<String,Double> m:datesOn.entrySet()){   
+				 for(@SuppressWarnings("rawtypes") Map.Entry<String,Double> m:datesOn.entrySet()){  
+					//  System.out.println(m.getKey()+" "+m.getValue());  
 					 if( m.getValue() > 8){
-						 massage+="Error : "+e.getEmployeeName() +" has an mismatch in effort on "+m.getKey()+" hours is : "+m.getValue() + " is more than actual hours";
+						 massage+="Error : "+e.getEmployeeName() +" has an mismatch in effort on "+m.getKey()+" hours is : "+m.getValue() + " is more than actual hours"+"\n";
 						// System.out.println("Error : "+e.getEmployeeName() +" has an mismatch in effort on "+m.getKey()+" hours is : "+m.getValue() + " is more than actual hours");
 					 }else if(m.getValue() < 8){
-						 massage+="Warning : "+e.getEmployeeName()+" has an mismatch in effort on  "+m.getKey()+" hours is : "+m.getValue()+" is less than actual hours";
+						 massage+="Warning : "+e.getEmployeeName()+" has an mismatch in effort on  "+m.getKey()+" hours is : "+m.getValue()+" is less than actual hours"+"\n";
 						// System.out.println("Warning : "+e.getEmployeeName()+" has an mismatch in effort on  "+m.getKey()+" hours is : "+m.getValue()+" is less than actual hours");
 					 }else{
 						 
 					 }
-					
+					fb.setErrMessage(massage);
 		        	  }
 				 System.out.println(massage);
 				 
 				 for(@SuppressWarnings("rawtypes") Map.Entry m:hourInsubProject.entrySet()){  
-		        	   System.out.println(m.getKey()+" "+m.getValue());  
+					 
+		        	   System.out.println(m.getKey()+" "+m.getValue()); 
+		        	   Finalmessage+= m.getKey()+" "+m.getValue()+" Hours ";
+		        	   fb.setEmployeeId(e.getEmployeeId());
+					   fb.setEmployeeName(e.getEmployeeName());
+		        	   fb.setSubProjectId(m.getKey().toString().split("-")[0]);
+		        	   fb.setSubProjectName(m.getKey().toString().split("-")[1]);
+		        	   if(m.getKey().toString().contains("onsite")){
+		        		   fb.setTotalOnsiteDays((Double.parseDouble(m.getValue().toString()))/8);
+		        	   }else{
+		        		   fb.setTotalOffshoreDays((Double.parseDouble(m.getValue().toString()))/8); 
+		        	   }
+		        	   fbc.add(fb);
 		        	  }
+				System.out.println(Finalmessage);
 				
 		     }
-			
+		return fbc;	
 		
 	}
 	
