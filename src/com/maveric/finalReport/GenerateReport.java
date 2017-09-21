@@ -25,7 +25,7 @@ public class GenerateReport {
 			
 			fb=new FinalBillingClass();
 			fb=billing.next();
-			System.out.println(fb.getEmployeeId()+ " "+fb.getEmployeeName()+" "+fb.getSubProjectId() +" "+fb.getSubProjectName()+" "+fb.getTotalOnsiteDays()+" "+fb.getTotalOnsiteDays()+" "+fb.getErrMessage());
+			System.out.println(fb.getEmployeeId()+ " "+fb.getEmployeeName()+" "+fb.getSubProjectId() +" "+fb.getSubProjectName()+" "+fb.getTotalOnsiteDays()+" "+fb.getTotalOffshoreDays()+" "+fb.getErrMessage());
 			
 		}
 	}

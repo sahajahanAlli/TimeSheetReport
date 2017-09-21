@@ -42,7 +42,7 @@ public class InitializeEmployeeDetails {
 		          }
 		         }
 		         for(Map.Entry m:employeeKey.entrySet()){  
-		        	   System.out.println(m.getKey()+" "+m.getValue());  
+		        	//   System.out.println(m.getKey()+" "+m.getValue());  
 		        	  } 
 
 		        }catch(Exception e){
@@ -128,14 +128,14 @@ public class InitializeEmployeeDetails {
 				e=employeeiterator.next();
 				int totalworkinghours=0;
 				int totalNonworkinghours=0;
-				System.out.println(e.getEmployeeId() + " "+e.getEmployeeName()+ " "+e.getClientName()+" "+e.getProjectName());
+				//System.out.println(e.getEmployeeId() + " "+e.getEmployeeName()+ " "+e.getClientName()+" "+e.getProjectName());
 			
 				Iterator<TimeAndWorkLocation> twiterator = e.getTimeAndWorkLocation().iterator();
 				TimeAndWorkLocation tw=null;
 				while (twiterator.hasNext()) {
 					tw=new TimeAndWorkLocation();
 					tw=twiterator.next();
-					System.out.println(tw.getSubProject()+" "+tw.getActivity()+" "+tw.getWorkLocation()+" "+tw.getCurrentCity()+" "+tw.getActivityDate()+" "+tw.getDuration());
+					//System.out.println(tw.getSubProject()+" "+tw.getActivity()+" "+tw.getWorkLocation()+" "+tw.getCurrentCity()+" "+tw.getActivityDate()+" "+tw.getDuration());
 			     
 					if( !tw.getActivity().equals("Holiday") || !tw.getActivity().equals("Leave")){
 			    	  totalworkinghours+=Double.parseDouble(tw.getDuration());
@@ -144,7 +144,7 @@ public class InitializeEmployeeDetails {
 			      }
 					
 				}
-				System.out.println("Total Working Hours : "+totalworkinghours +"   Total Non Working Hours "+totalNonworkinghours);
+				//System.out.println("Total Working Hours : "+totalworkinghours +"   Total Non Working Hours "+totalNonworkinghours);
 				e.setTotalWorkingHours(totalworkinghours);
 				e.setTotalNonWorkingHours(totalNonworkinghours);
 		     }	 	
@@ -178,8 +178,9 @@ public class InitializeEmployeeDetails {
 				while (twiterator.hasNext()) {
 					tw=new TimeAndWorkLocation();
 					tw=twiterator.next();
+					if(!tw.getActivity().equals("Holiday")){
 					subProject.put(tw.getSubProject(), e.getEmployeeId());
-					
+					}
 					//checking the hours in a day
 					if(tw.getStatus().equals("Approved") || tw.getStatus().equals("Submitted") ){
 						if(!tw.getActivity().equals("Holiday")){
@@ -229,26 +230,44 @@ public class InitializeEmployeeDetails {
 					 }else{
 						 
 					 }
-					fb.setErrMessage(massage);
+				//	fb.setErrMessage(massage);
 		        	  }
-				 System.out.println(massage);
+				// System.out.println(massage);
+				 HashMap<String,String> subProjCount=new HashMap<String,String>(); 
+				 boolean checkFlag=true;
 				 
-				 for(@SuppressWarnings("rawtypes") Map.Entry m:hourInsubProject.entrySet()){  
+				 for(@SuppressWarnings("rawtypes") Map.Entry m:subProject.entrySet()){  
 					 
-		        	   System.out.println(m.getKey()+" "+m.getValue()); 
-		        	   Finalmessage+= m.getKey()+" "+m.getValue()+" Hours ";
+					 System.out.println(m.getKey());//subProject
+					 
+					 if(m.getKey().toString()!=null){
+		        	//   System.out.println(m.getKey().toString().split("-")[0]+"-"+m.getKey().toString().split("-")[1]); 
+		        	//   Finalmessage+= m.getKey()+" "+m.getValue()+" Hours ";
 		        	   fb.setEmployeeId(e.getEmployeeId());
 					   fb.setEmployeeName(e.getEmployeeName());
 		        	   fb.setSubProjectId(m.getKey().toString().split("-")[0]);
 		        	   fb.setSubProjectName(m.getKey().toString().split("-")[1]);
-		        	   if(m.getKey().toString().contains("onsite")){
-		        		   fb.setTotalOnsiteDays((Double.parseDouble(m.getValue().toString()))/8);
+		        	   System.out.println("***************************************************"+" "+e.getEmployeeName()+" "+m.getKey()+" "+m.getValue());
+		        	   
+		        	//   if(m.getKey().toString().contains("onsite")){
+		        	   if(hourInsubProject.containsKey(m.getKey().toString()+"-onsite")){
+		        		   fb.setTotalOnsiteDays((Double.parseDouble(hourInsubProject.get(m.getKey().toString()+"-onsite").toString()))/8);
 		        	   }else{
-		        		   fb.setTotalOffshoreDays((Double.parseDouble(m.getValue().toString()))/8); 
+		        		   fb.setTotalOnsiteDays(0.0);
 		        	   }
+		        	   if(hourInsubProject.containsKey(m.getKey().toString()+"-offshore")){
+		        		   fb.setTotalOffshoreDays((Double.parseDouble(hourInsubProject.get(m.getKey().toString()+"-offshore").toString()))/8);
+		        	   }else{
+		        		   fb.setTotalOffshoreDays(0.0);
+		        	   }
+		        	//   }else{
+		        	//	   System.out.println("Offshore  part of the timesheet"+(Double.parseDouble(m.getValue().toString()))/8);
+		        		  
+		        	 //  }
 		        	   fbc.add(fb);
 		        	  }
-				System.out.println(Finalmessage);
+				 }
+				//System.out.println(Finalmessage);
 				
 		     }
 		return fbc;	
