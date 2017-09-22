@@ -163,7 +163,7 @@ public class InitializeEmployeeDetails {
 			while (employeeiterator.hasNext()) {
 				
 				String Finalmessage=null;
-				fb=new FinalBillingClass();
+				
 				subProject=new HashMap<String,String>(); 
 				hourInsubProject=new HashMap<String,Double>(); 
 				datesOn=new HashMap<String,Double>(); 
@@ -243,6 +243,7 @@ public class InitializeEmployeeDetails {
 					 if(m.getKey().toString()!=null){
 		        	//   System.out.println(m.getKey().toString().split("-")[0]+"-"+m.getKey().toString().split("-")[1]); 
 		        	//   Finalmessage+= m.getKey()+" "+m.getValue()+" Hours ";
+						 fb=new FinalBillingClass();
 		        	   fb.setEmployeeId(e.getEmployeeId());
 					   fb.setEmployeeName(e.getEmployeeName());
 		        	   fb.setSubProjectId(m.getKey().toString().split("-")[0]);
@@ -264,8 +265,9 @@ public class InitializeEmployeeDetails {
 		        	//	   System.out.println("Offshore  part of the timesheet"+(Double.parseDouble(m.getValue().toString()))/8);
 		        		  
 		        	 //  }
-		        	   fbc.add(fb);
+		        	  
 		        	  }
+					 fbc.add(fb);
 				 }
 				//System.out.println(Finalmessage);
 				
