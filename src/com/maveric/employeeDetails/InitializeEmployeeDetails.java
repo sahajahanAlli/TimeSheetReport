@@ -10,47 +10,152 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import com.maveric.writeErrLog.WriteLog;
 
 public class InitializeEmployeeDetails {
 	 
 	
-	public HashMap<String, String> createEmployeeMap(String filePath){
+	public HashMap<String, String> createEmployeeMap(String filePath,String capitalisationFile){
 		
 		    HashMap<String,String> employeeKey=new HashMap<String,String>();  
+		    HashMap<String,String> subProjectData=new HashMap<String,String>();  
 	        File file=null;
 	        FileInputStream inputStream=null;
 	        XSSFWorkbook wbk=null;
 	        Sheet sheet=null;
-	        System.out.println(filePath);
 			 try{ 
 		          file = new File (filePath);
 		          inputStream = new FileInputStream(file);
 		           wbk = new XSSFWorkbook(inputStream);
-		         
-		         
 		          sheet = wbk.getSheet("Sheet1");
 		         int rowCount = sheet.getLastRowNum();
 		         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
-
-		         
 		         for(int i=1;i<=rowCount;i++){
 		          Row row = sheet.getRow(i);     
-		         
-
 		          for (int j=0; j<colCount;j++){     
 		           employeeKey.put(row.getCell(1).toString(), row.getCell(2).toString()); 
+		           if(row.getCell(6).toString()!=null && row.getCell(6).toString()!=""){
+		           subProjectData.put(row.getCell(6).toString(), row.getCell(1).toString());
+		           }
 		          }
 		         }
-		         for(Map.Entry m:employeeKey.entrySet()){  
-		        	//   System.out.println(m.getKey()+" "+m.getValue());  
-		        	  } 
 
 		        }catch(Exception e){
 		               e.printStackTrace();
 		         }
 			 
+			 capitalisationValidator(subProjectData,capitalisationFile);
+			 
 			return employeeKey;		 
 	}
+	
+	public HashMap<String, String> capitalisationValidator(HashMap<String, String> subProjectData,String capitalisation){
+		
+		  HashMap<String,String> capitalisationMap=new HashMap<String,String>();  
+	        File file=null;
+	        FileInputStream inputStream=null;
+	        XSSFWorkbook wbk=null;
+	        Sheet sheet=null;
+			 try{ 
+		          file = new File (capitalisation);
+		          inputStream = new FileInputStream(file);
+		           wbk = new XSSFWorkbook(inputStream);
+		          sheet = wbk.getSheet("Sheet1");
+		         int rowCount = sheet.getLastRowNum();
+		         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
+		         for(int i=1;i<=rowCount;i++){
+		          Row row = sheet.getRow(i);     
+		          for (int j=0; j<colCount;j++){     
+		           capitalisationMap.put((row.getCell(0)!=null?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
+		          }
+		         }
+
+		        }catch(Exception e){
+		               e.printStackTrace();
+		         }
+			 
+			 boolean subProjectPresence=false;
+			 String txtmissingSubProject="";
+			 for (Map.Entry m:subProjectData.entrySet()){
+				 if(!m.getKey().toString().contains("ITCR") || !m.getKey().toString().contains("ITCR ")){
+				 if(!capitalisationMap.containsKey(m.getKey())){
+					 subProjectPresence=true;
+					// System.out.println(" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue());
+					 txtmissingSubProject+=" Sub Project Details is absent in capitalisation : "+m.getKey() +"\n";
+				 }
+				}else{
+					 if(!capitalisationMap.containsKey(m.getKey())){
+						 subProjectPresence=true;
+						// System.out.println(" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue());
+						 txtmissingSubProject+=" Sub Project Details is absent in capitalisation : "+m.getKey() +"\n";
+					 }
+				}
+			 }
+			 
+			 if(subProjectPresence){
+				 WriteLog wLog=new WriteLog();
+				 wLog.createLogText(txtmissingSubProject);
+				 System.out.println(txtmissingSubProject);
+				 System.out.println("Please add these sub projects  in the capitalisation sheet.");
+				 System.exit(0);
+			 }
+			 
+			return capitalisationMap;	
+		
+	}
+	
+	public HashMap<String, String> employeeIdMapValidator(HashMap<String, String> empMap, String filePath){
+		
+	    HashMap<String,String> employeeKey=new HashMap<String,String>();  
+        File file=null;
+        FileInputStream inputStream=null;
+        XSSFWorkbook wbk=null;
+        Sheet sheet=null;
+		 try{ 
+	          file = new File (filePath);
+	          inputStream = new FileInputStream(file);
+	           wbk = new XSSFWorkbook(inputStream);
+	          sheet = wbk.getSheet("Sheet1");
+	         int rowCount = sheet.getLastRowNum();
+	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);     
+	          for (int j=0; j<colCount;j++){     
+	           employeeKey.put(row.getCell(0).toString(), row.getCell(1).toString()); 
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		 if(empMap.size()!=employeeKey.size()){
+			 System.out.println("Number of employee in the sheets are not matching");
+		 }
+		 
+		 boolean empPresence=false;
+		 String txtmissingEmp="";
+		 for (Map.Entry m:empMap.entrySet()){
+			 if(!employeeKey.containsKey(m.getKey())){
+				 empPresence=true;
+				// System.out.println(" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue());
+				 txtmissingEmp+=" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue()+"\n";
+				
+			 }
+		 }
+		 
+		 if(empPresence){
+			 WriteLog wLog=new WriteLog();
+			 wLog.createLogText(txtmissingEmp);
+			 System.out.println(txtmissingEmp);
+			 System.out.println("Please add these people in the employee id mapping sheet.");
+			 System.exit(0);
+		 }
+		 
+		 
+		 
+		return employeeKey;		 
+}
 	
 	public ArrayList<Employee> createEmployeeDetails( HashMap<String,String> employeeKey,String filePath){
 		
@@ -104,12 +209,6 @@ public class InitializeEmployeeDetails {
 		         emp.setTimeAndWorkLocation(timeWork);
 		         al.add(emp);
 	        	  }
-			 
-			 if(employeeKey.size() == al.size()){
-				 System.out.println("Matched");
-			 }else{
-				 System.out.println("Not Matched");
-			 }
 			     
 	}catch(Exception e){
 		 e.printStackTrace();
@@ -127,16 +226,12 @@ public class InitializeEmployeeDetails {
 				e=new Employee();
 				e=employeeiterator.next();
 				int totalworkinghours=0;
-				int totalNonworkinghours=0;
-				//System.out.println(e.getEmployeeId() + " "+e.getEmployeeName()+ " "+e.getClientName()+" "+e.getProjectName());
-			
+				int totalNonworkinghours=0;		
 				Iterator<TimeAndWorkLocation> twiterator = e.getTimeAndWorkLocation().iterator();
 				TimeAndWorkLocation tw=null;
 				while (twiterator.hasNext()) {
 					tw=new TimeAndWorkLocation();
 					tw=twiterator.next();
-					//System.out.println(tw.getSubProject()+" "+tw.getActivity()+" "+tw.getWorkLocation()+" "+tw.getCurrentCity()+" "+tw.getActivityDate()+" "+tw.getDuration());
-			     
 					if( !tw.getActivity().equals("Holiday") || !tw.getActivity().equals("Leave")){
 			    	  totalworkinghours+=Double.parseDouble(tw.getDuration());
 			      }else{
@@ -144,7 +239,6 @@ public class InitializeEmployeeDetails {
 			      }
 					
 				}
-				//System.out.println("Total Working Hours : "+totalworkinghours +"   Total Non Working Hours "+totalNonworkinghours);
 				e.setTotalWorkingHours(totalworkinghours);
 				e.setTotalNonWorkingHours(totalNonworkinghours);
 		     }	 	
@@ -194,6 +288,7 @@ public class InitializeEmployeeDetails {
 					
 					//onsite and offshore hours
 					if(!tw.getSubProject().equals("")){
+						//System.out.println("--------------------------------------"+tw.getSubProject());
 					if(tw.getWorkLocation().equals("Maveric Premises")){
 						
 						if(hourInsubProject.containsKey(tw.getSubProject()+"-offshore")){
@@ -213,69 +308,131 @@ public class InitializeEmployeeDetails {
 					}
 					}
 				}
-				
-				System.out.println("For Employee "+e.getEmployeeName()+ "Sub Projects are ");
-				 for(@SuppressWarnings("rawtypes") Map.Entry m:subProject.entrySet()){  
-		        	   System.out.println(m.getKey()+" "+m.getValue());  
-		        	  }
 				 
-				 for(@SuppressWarnings("rawtypes") Map.Entry<String,Double> m:datesOn.entrySet()){  
-					//  System.out.println(m.getKey()+" "+m.getValue());  
+				 for(@SuppressWarnings("rawtypes") Map.Entry<String,Double> m:datesOn.entrySet()){    
 					 if( m.getValue() > 8){
 						 massage+="Error : "+e.getEmployeeName() +" has an mismatch in effort on "+m.getKey()+" hours is : "+m.getValue() + " is more than actual hours"+"\n";
-						// System.out.println("Error : "+e.getEmployeeName() +" has an mismatch in effort on "+m.getKey()+" hours is : "+m.getValue() + " is more than actual hours");
 					 }else if(m.getValue() < 8){
 						 massage+="Warning : "+e.getEmployeeName()+" has an mismatch in effort on  "+m.getKey()+" hours is : "+m.getValue()+" is less than actual hours"+"\n";
-						// System.out.println("Warning : "+e.getEmployeeName()+" has an mismatch in effort on  "+m.getKey()+" hours is : "+m.getValue()+" is less than actual hours");
 					 }else{
 						 
 					 }
-				//	fb.setErrMessage(massage);
+					
 		        	  }
-				// System.out.println(massage);
 				 HashMap<String,String> subProjCount=new HashMap<String,String>(); 
 				 boolean checkFlag=true;
+			
 				 
-				 for(@SuppressWarnings("rawtypes") Map.Entry m:subProject.entrySet()){  
-					 
-					 System.out.println(m.getKey());//subProject
-					 
-					 if(m.getKey().toString()!=null){
-		        	//   System.out.println(m.getKey().toString().split("-")[0]+"-"+m.getKey().toString().split("-")[1]); 
-		        	//   Finalmessage+= m.getKey()+" "+m.getValue()+" Hours ";
-						 fb=new FinalBillingClass();
-		        	   fb.setEmployeeId(e.getEmployeeId());
-					   fb.setEmployeeName(e.getEmployeeName());
-		        	   fb.setSubProjectId(m.getKey().toString().split("-")[0]);
-		        	   fb.setSubProjectName(m.getKey().toString().split("-")[1]);
-		        	   System.out.println("***************************************************"+" "+e.getEmployeeName()+" "+m.getKey()+" "+m.getValue());
-		        	   
-		        	//   if(m.getKey().toString().contains("onsite")){
-		        	   if(hourInsubProject.containsKey(m.getKey().toString()+"-onsite")){
-		        		   fb.setTotalOnsiteDays((Double.parseDouble(hourInsubProject.get(m.getKey().toString()+"-onsite").toString()))/8);
-		        	   }else{
-		        		   fb.setTotalOnsiteDays(0.0);
-		        	   }
-		        	   if(hourInsubProject.containsKey(m.getKey().toString()+"-offshore")){
-		        		   fb.setTotalOffshoreDays((Double.parseDouble(hourInsubProject.get(m.getKey().toString()+"-offshore").toString()))/8);
-		        	   }else{
-		        		   fb.setTotalOffshoreDays(0.0);
-		        	   }
-		        	//   }else{
-		        	//	   System.out.println("Offshore  part of the timesheet"+(Double.parseDouble(m.getValue().toString()))/8);
-		        		  
-		        	 //  }
-		        	  
-		        	  }
-					 fbc.add(fb);
-				 }
-				//System.out.println(Finalmessage);
+				                  for(@SuppressWarnings("rawtypes") Map.Entry m:hourInsubProject.entrySet()){  		 
+					 	        	  fb=new FinalBillingClass();
+						        	   fb.setEmployeeId(e.getEmployeeId());
+						        	   System.out.println(e.getEmployeeId());
+									   fb.setEmployeeName(e.getEmployeeName());
+									   if(!m.getKey().toString().contains("ITCR") || m.getKey().toString().contains("ITCR ")){
+						        	   fb.setSubProjectId(m.getKey().toString().split("-")[0]);
+						        	   fb.setSubProjectName(m.getKey().toString().split("-")[1]);
+						        	   System.out.println("++++++++++++++++++++++++++++++++"+m.getKey().toString().split("-")[1]);
+									   }else{
+										   fb.setSubProjectId("CH242");
+							        	   fb.setSubProjectName(m.getKey().toString().split("-")[0]+"-"+m.getKey().toString().split("-")[1]);
+							        	   System.out.println("++++++++++++++++++++++++++++++++"+m.getKey().toString().split("-")[0]+"-"+m.getKey().toString().split("-")[1]);
+									   }
+						        	   
+					 		        	   if(m.getKey().toString().contains("onsite")){
+					 		        		   fb.setTotalOnsiteDays((Double.parseDouble(m.getValue().toString()))/8);
+					 		        		   fb.setLocation("onsite");
+							        	   }else{
+					 		        		   fb.setTotalOffshoreDays((Double.parseDouble(m.getValue().toString()))/8);
+					 		        		   fb.setLocation("offshore");
+					 		        	   }
+					 		        	  fb.setErrMessage(massage);
+					 		        	   fbc.add(fb);
+					  		        	  }
 				
 		     }
 		return fbc;	
 		
 	}
 	
+	public HashMap<String, String> createEmployeeRoleMappingMap(String filePath){
+		
+		 HashMap<String,String> roleMapping=new HashMap<String,String>();  
+	        File file=null;
+	        FileInputStream inputStream=null;
+	        XSSFWorkbook wbk=null;
+	        Sheet sheet=null;
+			 try{ 
+		          file = new File (filePath);
+		          inputStream = new FileInputStream(file);
+		           wbk = new XSSFWorkbook(inputStream);
+		          sheet = wbk.getSheet("Sheet1");
+		         int rowCount = sheet.getLastRowNum();
+		         for(int i=1;i<=rowCount;i++){
+		          Row row = sheet.getRow(i);      
+		        	 // roleMapping.put(row.getCell(0).toString()+"_"+row.getCell(1).toString(), row.getCell(2).toString());
+		          roleMapping.put(row.getCell(0).toString(), row.getCell(2).toString());
+		         }
+		        }catch(Exception e){
+		               e.printStackTrace();
+		         }
+			 
+			return roleMapping;		
+		
+	}
 	
+	public HashMap<String, String> createEmployeeRateMap(String filePath){
+		
+		 HashMap<String,String> roleMapping=new HashMap<String,String>();  
+	        File file=null;
+	        FileInputStream inputStream=null;
+	        XSSFWorkbook wbk=null;
+	        Sheet sheet=null;
+			 try{ 
+		          file = new File (filePath);
+		          inputStream = new FileInputStream(file);
+		           wbk = new XSSFWorkbook(inputStream);
+		          sheet = wbk.getSheet("Sheet1");
+		         int rowCount = sheet.getLastRowNum();
+		         for(int i=1;i<=rowCount;i++){
+		          Row row = sheet.getRow(i);          
+		        	  roleMapping.put(row.getCell(0).toString()+"_"+"onsite", row.getCell(1).toString()); 
+		        	  roleMapping.put(row.getCell(0).toString()+"_"+"offshore", row.getCell(2).toString()); 
+		         }
+
+		        }catch(Exception e){
+		               e.printStackTrace();
+		         }
+			 
+			return roleMapping;		
+		
+	}
+	
+	public HashMap<String, Double> createCapitalizationMap(String filePath){
+		
+		 HashMap<String,Double> capitalizationMapping=new HashMap<String,Double>();  
+	        File file=null;
+	        FileInputStream inputStream=null;
+	        XSSFWorkbook wbk=null;
+	        Sheet sheet=null;
+			 try{ 
+		          file = new File (filePath);
+		          inputStream = new FileInputStream(file);
+		          wbk = new XSSFWorkbook(inputStream);
+		          sheet = wbk.getSheet("Sheet1");
+		         int rowCount = sheet.getLastRowNum();
+		       
+		         for(int i=1;i<=rowCount;i++){
+		          Row row = sheet.getRow(i);      
+		          capitalizationMapping.put(row.getCell(1).toString(), Double.parseDouble(row.getCell(2).toString())); 
+		        
+		         } 
+
+		        }catch(Exception e){
+		               e.printStackTrace();
+		         }
+			 
+			return capitalizationMapping;	
+		
+	}
 	
 }

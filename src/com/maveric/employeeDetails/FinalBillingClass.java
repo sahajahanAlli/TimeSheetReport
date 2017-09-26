@@ -9,6 +9,7 @@ public class FinalBillingClass {
 	private double totalOnsiteDays;
 	private double totalOffshoreDays;
 	private String errMessage;
+	private String location;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -51,6 +52,12 @@ public class FinalBillingClass {
 	}
 	public void setErrMessage(String errMessage) {
 		this.errMessage = errMessage;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
 	
