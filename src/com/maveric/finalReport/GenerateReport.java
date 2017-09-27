@@ -51,20 +51,17 @@ public class GenerateReport {
 		}
 		
 		String filePath=excelFilePath+"\\inputFiles\\"+args[0];
-		String roleFilePath=excelFilePath+"\\inputFiles\\"+args[1];
-		String rateFilePath=excelFilePath+"\\inputFiles\\"+args[2];
-		String capitalizationeFilePath=excelFilePath+"\\inputFiles\\"+args[3];
 		InitializeEmployeeDetails ied=new InitializeEmployeeDetails();
-		HashMap<String, String> empMap = ied.createEmployeeMap(filePath, capitalizationeFilePath);
-		ied.employeeIdMapValidator(empMap,roleFilePath);
+		HashMap<String, String> empMap = ied.createEmployeeMap(filePath, filePath);
+		ied.employeeIdMapValidator(empMap,filePath);
 		ArrayList<Employee> al=ied.createEmployeeDetails(empMap, filePath);
 		ied.displayData(al);
 		ArrayList<FinalBillingClass> fbc=ied.checkAndValidateHours(al);
 		//Iterator<FinalBillingClass>  billing= fbc.iterator();
 		//FinalBillingClass fb=null;
-		HashMap<String, Double> capitalizarionMap = ied.createCapitalizationMap(capitalizationeFilePath);
-		HashMap<String, String> roleMappingMap = ied.createEmployeeRoleMappingMap(roleFilePath);
-		HashMap<String, String> rateMap = ied.createEmployeeRateMap(rateFilePath);
+		HashMap<String, Double> capitalizarionMap = ied.createCapitalizationMap(filePath);
+		HashMap<String, String> roleMappingMap = ied.createEmployeeRoleMappingMap(filePath);
+		HashMap<String, String> rateMap = ied.createEmployeeRateMap(filePath);
 		ce.createExcelEmployeeDetails(fbc,roleMappingMap,rateMap,capitalizarionMap);	
 	//	ce.CreateOnsiteReportExcel(fbc,roleMappingMap,rateMap,capitalizarionMap);
 	//	ce.CreateOffshoreReportExcel(fbc,roleMappingMap,rateMap,capitalizarionMap);

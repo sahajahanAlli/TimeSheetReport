@@ -123,7 +123,7 @@ public class CreateReportExcel {
 		        cell2.setCellValue(fb.getSubProjectId());
 				
 		         cell3 = row.createCell(3);
-		        cell3.setCellValue(fb.getSubProjectName());
+		        cell3.setCellValue(fb.getSubProjectName().split("\\.")[0]);
 		        
 		         cell4 = row.createCell(4);
 		        cell4.setCellValue(fb.getLocation());
@@ -136,10 +136,10 @@ public class CreateReportExcel {
 		        
 		        
 		          cell7 = row.createCell(7);
-		        cell7.setCellValue(roleMappingMap.get(fb.getEmployeeId().toString()+"_"+fb.getEmployeeName().toString()));
+		        cell7.setCellValue(roleMappingMap.get(fb.getEmployeeId().toString()));
 		        
 		          cell8 = row.createCell(8);
-		        cell8.setCellValue(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString()+"_"+fb.getEmployeeName().toString())+"_"+fb.getLocation()));
+		        cell8.setCellValue(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString())+"_"+fb.getLocation()));
 		        System.out.println(fb.getEmployeeId().toString());
 		        
 		        cell9 = row.createCell(9);
@@ -149,39 +149,40 @@ public class CreateReportExcel {
 		        	totalAmount=fb.getTotalOnsiteDays() * Double.parseDouble(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString())+"_"+fb.getLocation()));
 		        	 cell9.setCellValue(totalAmount);
 		        }else{
+	        	System.out.println(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString())+"_"+fb.getLocation()));
 		          //totalAmount=fb.getTotalOffshoreDays() * Double.parseDouble(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString()+"_"+fb.getEmployeeName().toString())+"_"+fb.getLocation()));
 		        	totalAmount=fb.getTotalOffshoreDays() * Double.parseDouble(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString())+"_"+fb.getLocation()));
 		        	 cell9.setCellValue(totalAmount);
 		        }
 		        
 		        cell10 = row.createCell(10);
-		        cell10.setCellValue("10");
+		        cell10.setCellValue(0);
 		        
 		        cell11 = row.createCell(11);
-		        cell11.setCellValue((totalAmount*(100-10)/100));
+		        cell11.setCellValue((totalAmount*(100-0)/100));
 		        
 		        cell12 = row.createCell(12);
 		        System.out.println(fb.getSubProjectName());
 		        System.out.println("888888888888888888888"+fb.getSubProjectName());
-		        cell12.setCellValue(capitalizarionMap.get(fb.getSubProjectName()));
+		        cell12.setCellValue(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]));
 		        
 		        cell13 = row.createCell(13);
-		        cell13.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName())/100));
+		        cell13.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100));
 		        
 		        cell14 = row.createCell(14);
-		        cell14.setCellValue( (totalAmount*(100-10)/100)*((100-capitalizarionMap.get(fb.getSubProjectName()))/100));
+		        cell14.setCellValue( (totalAmount*(100-10)/100)*((100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]))/100));
 		        
 		        cell15 = row.createCell(15);
-		        cell15.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName())/100));
+		        cell15.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100));
 		        
 		        cell16 = row.createCell(16);
-		        cell16.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName())/100)*(120.00/100));
+		        cell16.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100)*(120.00/100));
 		        
 		        cell17 = row.createCell(17);
-		        cell17.setCellValue( (totalAmount*(100-10)/100)*(100-capitalizarionMap.get(fb.getSubProjectName()))/100*(120.00/100));
+		        cell17.setCellValue( (totalAmount*(100-10)/100)*(100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]))/100*(120.00/100));
 		        
 		        cell18 = row.createCell(18);
-		        cell18.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName())/100)*(120.00/100));
+		        cell18.setCellValue( (totalAmount*(100-10)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100)*(120.00/100));
 		        
 		        cell19 = row.createCell(19);
 		        cell19.setCellValue(fb.getErrMessage());

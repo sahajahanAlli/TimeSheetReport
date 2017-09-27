@@ -19,15 +19,10 @@ public class InitializeEmployeeDetails {
 		
 		    HashMap<String,String> employeeKey=new HashMap<String,String>();  
 		    HashMap<String,String> subProjectData=new HashMap<String,String>();  
-	        File file=null;
-	        FileInputStream inputStream=null;
-	        XSSFWorkbook wbk=null;
 	        Sheet sheet=null;
 			 try{ 
-		          file = new File (filePath);
-		          inputStream = new FileInputStream(file);
-		           wbk = new XSSFWorkbook(inputStream);
-		          sheet = wbk.getSheet("Sheet1");
+				 XSSFWorkbook wbk = readDataExcel(capitalisationFile);
+		          sheet = wbk.getSheet("timesheetdata");
 		         int rowCount = sheet.getLastRowNum();
 		         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
 		         for(int i=1;i<=rowCount;i++){
@@ -52,21 +47,16 @@ public class InitializeEmployeeDetails {
 	public HashMap<String, String> capitalisationValidator(HashMap<String, String> subProjectData,String capitalisation){
 		
 		  HashMap<String,String> capitalisationMap=new HashMap<String,String>();  
-	        File file=null;
-	        FileInputStream inputStream=null;
-	        XSSFWorkbook wbk=null;
 	        Sheet sheet=null;
 			 try{ 
-		          file = new File (capitalisation);
-		          inputStream = new FileInputStream(file);
-		           wbk = new XSSFWorkbook(inputStream);
-		          sheet = wbk.getSheet("Sheet1");
+				 XSSFWorkbook wbk = readDataExcel(capitalisation);
+		          sheet = wbk.getSheet("capitalisation");
 		         int rowCount = sheet.getLastRowNum();
 		         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
 		         for(int i=1;i<=rowCount;i++){
 		          Row row = sheet.getRow(i);     
 		          for (int j=0; j<colCount;j++){     
-		           capitalisationMap.put((row.getCell(0)!=null?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
+		           capitalisationMap.put((row.getCell(0)!=null?(row.getCell(0)+"_"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
 		          }
 		         }
 
@@ -107,15 +97,10 @@ public class InitializeEmployeeDetails {
 	public HashMap<String, String> employeeIdMapValidator(HashMap<String, String> empMap, String filePath){
 		
 	    HashMap<String,String> employeeKey=new HashMap<String,String>();  
-        File file=null;
-        FileInputStream inputStream=null;
-        XSSFWorkbook wbk=null;
         Sheet sheet=null;
 		 try{ 
-	          file = new File (filePath);
-	          inputStream = new FileInputStream(file);
-	           wbk = new XSSFWorkbook(inputStream);
-	          sheet = wbk.getSheet("Sheet1");
+			 XSSFWorkbook wbk = readDataExcel(filePath);
+	          sheet = wbk.getSheet("employee-name-id-role_mapping");
 	         int rowCount = sheet.getLastRowNum();
 	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
 	         for(int i=1;i<=rowCount;i++){
@@ -171,7 +156,7 @@ public class InitializeEmployeeDetails {
         	file = new File (filePath);
 	          inputStream = new FileInputStream(file);
 	           wbk = new XSSFWorkbook(inputStream);
-	           sheet = wbk.getSheet("Sheet1");
+	           sheet = wbk.getSheet("timesheetdata");
 		     
 			 for(Map.Entry m:employeeKey.entrySet()){ 
 				 
@@ -277,7 +262,7 @@ public class InitializeEmployeeDetails {
 					}
 					//checking the hours in a day
 					if(tw.getStatus().equals("Approved") || tw.getStatus().equals("Submitted") ){
-						if(!tw.getActivity().equals("Holiday")){
+						if(!tw.getActivity().equals("Holiday") || !tw.getActivity().equals("Leave")){
 					if(datesOn.containsKey(tw.getActivityDate())){
 					datesOn.put(tw.getActivityDate(), datesOn.get(tw.getActivityDate())+Double.parseDouble(tw.getDuration()));
 					}else{
@@ -291,18 +276,18 @@ public class InitializeEmployeeDetails {
 						//System.out.println("--------------------------------------"+tw.getSubProject());
 					if(tw.getWorkLocation().equals("Maveric Premises")){
 						
-						if(hourInsubProject.containsKey(tw.getSubProject()+"-offshore")){
-							hourInsubProject.put(tw.getSubProject()+"-offshore", hourInsubProject.get(tw.getSubProject()+"-offshore")+Double.parseDouble(tw.getDuration()));
+						if(hourInsubProject.containsKey(tw.getSubProject()+".offshore")){
+							hourInsubProject.put(tw.getSubProject()+".offshore", hourInsubProject.get(tw.getSubProject()+".offshore")+Double.parseDouble(tw.getDuration()));
 							}else{
-								hourInsubProject.put(tw.getSubProject()+"-offshore", Double.parseDouble(tw.getDuration()));
+								hourInsubProject.put(tw.getSubProject()+".offshore", Double.parseDouble(tw.getDuration()));
 							}
 						
 					}else{
 						
-						if(hourInsubProject.containsKey(tw.getSubProject()+"-onsite")){
-							hourInsubProject.put(tw.getSubProject()+"-onsite", hourInsubProject.get(tw.getSubProject()+"-onsite")+Double.parseDouble(tw.getDuration()));
+						if(hourInsubProject.containsKey(tw.getSubProject()+".onsite")){
+							hourInsubProject.put(tw.getSubProject()+".onsite", hourInsubProject.get(tw.getSubProject()+".onsite")+Double.parseDouble(tw.getDuration()));
 							}else{
-								hourInsubProject.put(tw.getSubProject()+"-onsite", Double.parseDouble(tw.getDuration()));
+								hourInsubProject.put(tw.getSubProject()+".onsite", Double.parseDouble(tw.getDuration()));
 							}
 						
 					}
@@ -328,10 +313,10 @@ public class InitializeEmployeeDetails {
 						        	   fb.setEmployeeId(e.getEmployeeId());
 						        	   System.out.println(e.getEmployeeId());
 									   fb.setEmployeeName(e.getEmployeeName());
-									   if(!m.getKey().toString().contains("ITCR") || m.getKey().toString().contains("ITCR ")){
-						        	   fb.setSubProjectId(m.getKey().toString().split("-")[0]);
-						        	   fb.setSubProjectName(m.getKey().toString().split("-")[1]);
-						        	   System.out.println("++++++++++++++++++++++++++++++++"+m.getKey().toString().split("-")[1]);
+									   if(!m.getKey().toString().contains("ITCR-")){
+						        	   fb.setSubProjectId(m.getKey().toString().contains("_")?m.getKey().toString().split("_")[0]:"");
+						        	   fb.setSubProjectName(m.getKey().toString().contains("_")?m.getKey().toString().split("_")[1]:m.getKey().toString());
+						        	   System.out.println("++++++++++++++++++++++++++++++++"+m.getKey().toString());
 									   }else{
 										   fb.setSubProjectId("CH242");
 							        	   fb.setSubProjectName(m.getKey().toString().split("-")[0]+"-"+m.getKey().toString().split("-")[1]);
@@ -357,15 +342,10 @@ public class InitializeEmployeeDetails {
 	public HashMap<String, String> createEmployeeRoleMappingMap(String filePath){
 		
 		 HashMap<String,String> roleMapping=new HashMap<String,String>();  
-	        File file=null;
-	        FileInputStream inputStream=null;
-	        XSSFWorkbook wbk=null;
 	        Sheet sheet=null;
 			 try{ 
-		          file = new File (filePath);
-		          inputStream = new FileInputStream(file);
-		           wbk = new XSSFWorkbook(inputStream);
-		          sheet = wbk.getSheet("Sheet1");
+				 XSSFWorkbook wbk = readDataExcel(filePath);
+		          sheet = wbk.getSheet("employee-name-id-role_mapping");
 		         int rowCount = sheet.getLastRowNum();
 		         for(int i=1;i<=rowCount;i++){
 		          Row row = sheet.getRow(i);      
@@ -383,15 +363,10 @@ public class InitializeEmployeeDetails {
 	public HashMap<String, String> createEmployeeRateMap(String filePath){
 		
 		 HashMap<String,String> roleMapping=new HashMap<String,String>();  
-	        File file=null;
-	        FileInputStream inputStream=null;
-	        XSSFWorkbook wbk=null;
 	        Sheet sheet=null;
 			 try{ 
-		          file = new File (filePath);
-		          inputStream = new FileInputStream(file);
-		           wbk = new XSSFWorkbook(inputStream);
-		          sheet = wbk.getSheet("Sheet1");
+				 XSSFWorkbook wbk = readDataExcel(filePath);
+		          sheet = wbk.getSheet("employee_rates");
 		         int rowCount = sheet.getLastRowNum();
 		         for(int i=1;i<=rowCount;i++){
 		          Row row = sheet.getRow(i);          
@@ -410,15 +385,10 @@ public class InitializeEmployeeDetails {
 	public HashMap<String, Double> createCapitalizationMap(String filePath){
 		
 		 HashMap<String,Double> capitalizationMapping=new HashMap<String,Double>();  
-	        File file=null;
-	        FileInputStream inputStream=null;
-	        XSSFWorkbook wbk=null;
 	        Sheet sheet=null;
 			 try{ 
-		          file = new File (filePath);
-		          inputStream = new FileInputStream(file);
-		          wbk = new XSSFWorkbook(inputStream);
-		          sheet = wbk.getSheet("Sheet1");
+		          XSSFWorkbook wbk = readDataExcel(filePath);
+		          sheet = wbk.getSheet("capitalisation");
 		         int rowCount = sheet.getLastRowNum();
 		       
 		         for(int i=1;i<=rowCount;i++){
@@ -433,6 +403,22 @@ public class InitializeEmployeeDetails {
 			 
 			return capitalizationMapping;	
 		
+	}
+	
+	public XSSFWorkbook readDataExcel(String filePath){
+		
+		 File file=null;
+	        FileInputStream inputStream=null;
+	        XSSFWorkbook wbk=null;
+			 try{ 
+		          file = new File (filePath);
+		          inputStream = new FileInputStream(file);
+		          wbk = new XSSFWorkbook(inputStream);
+		   
+			 }catch(Exception e){
+				 e.printStackTrace();
+			 }
+			return wbk;
 	}
 	
 }
