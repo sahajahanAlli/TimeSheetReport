@@ -33,10 +33,10 @@ public class GenerateReport {
 			System.out.println("Column details for employee_rates.xlsx : "+"\n"+"1. Role "+"\n"+"2. onsite "+"\n"+"3. offshore "+"\n");
 			System.out.println("Column details for capitalization.xlsx : "+"\n"+"1. Project Code "+"\n"+"2. QC/ITCR/Project Ref"+"\n"+"3. Capitalization "+"\n");
 			System.exit(1);
-		}else if(args.length != 4){	
+		}/*else if(args.length != 4){	
 			System.out.println(" Please provide no of required parameters");
 			System.exit(1);
-		}
+		}*/
 		
 		File f = new File(excelFilePath+"\\inputFiles");
 		if(!f.isDirectory()){
@@ -57,6 +57,7 @@ public class GenerateReport {
 		ArrayList<Employee> al=ied.createEmployeeDetails(empMap, filePath);
 		ied.displayData(al);
 		ArrayList<FinalBillingClass> fbc=ied.checkAndValidateHours(al);
+		HashMap<String, String> projectIdFiller = ied.fillerProjectId( filePath);
 		//Iterator<FinalBillingClass>  billing= fbc.iterator();
 		//FinalBillingClass fb=null;
 		HashMap<String, Double> capitalizarionMap = ied.createCapitalizationMap(filePath);

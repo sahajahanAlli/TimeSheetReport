@@ -87,7 +87,7 @@ public class InitializeEmployeeDetails {
 				 wLog.createLogText(txtmissingSubProject);
 				 System.out.println(txtmissingSubProject);
 				 System.out.println("Please add these sub projects  in the capitalisation sheet.");
-				 System.exit(0);
+				// System.exit(0);
 			 }
 			 
 			return capitalisationMap;	
@@ -217,7 +217,7 @@ public class InitializeEmployeeDetails {
 				while (twiterator.hasNext()) {
 					tw=new TimeAndWorkLocation();
 					tw=twiterator.next();
-					if( !tw.getActivity().equals("Holiday") || !tw.getActivity().equals("Leave")){
+					if( !tw.getActivity().equals("Holiday") && !tw.getActivity().equals("Leave") && tw.getActivity().equals("Comp.Off")){
 			    	  totalworkinghours+=Double.parseDouble(tw.getDuration());
 			      }else{
 			    	  totalNonworkinghours += Double.parseDouble(tw.getDuration());
@@ -257,12 +257,16 @@ public class InitializeEmployeeDetails {
 				while (twiterator.hasNext()) {
 					tw=new TimeAndWorkLocation();
 					tw=twiterator.next();
-					if(!tw.getActivity().equals("Holiday")){
-					subProject.put(tw.getSubProject(), e.getEmployeeId());
+					if(!tw.getActivity().equals("Holiday") && !tw.getActivity().equals("Leave") && !tw.getActivity().equals("Comp.Off")){
+						if(!(tw.getSubProject()==null || tw.getSubProject()=="")){
+							subProject.put(tw.getSubProject(), e.getEmployeeId());
+						}else{
+							subProject.put("Please Fill the sub project "+tw.getActivity().toString(), e.getEmployeeId());	
+						}
 					}
 					//checking the hours in a day
-					if(tw.getStatus().equals("Approved") || tw.getStatus().equals("Submitted") ){
-						if(!tw.getActivity().equals("Holiday") || !tw.getActivity().equals("Leave")){
+					if(tw.getStatus().equals("Approved") || tw.getStatus().equals("Submitted") || tw.getActivity().equals("Not Submitted")){
+						if(!tw.getActivity().equals("Holiday") && !tw.getActivity().equals("Leave") && !tw.getActivity().equals("Comp.Off")){
 					if(datesOn.containsKey(tw.getActivityDate())){
 					datesOn.put(tw.getActivityDate(), datesOn.get(tw.getActivityDate())+Double.parseDouble(tw.getDuration()));
 					}else{
@@ -273,8 +277,9 @@ public class InitializeEmployeeDetails {
 					
 					//onsite and offshore hours
 					if(!tw.getSubProject().equals("")){
-						//System.out.println("--------------------------------------"+tw.getSubProject());
+						System.out.println(tw.getActivityDate() + "            "+tw.getDuration()+"   "+tw.getSubProject());
 					if(tw.getWorkLocation().equals("Maveric Premises")){
+						
 						
 						if(hourInsubProject.containsKey(tw.getSubProject()+".offshore")){
 							hourInsubProject.put(tw.getSubProject()+".offshore", hourInsubProject.get(tw.getSubProject()+".offshore")+Double.parseDouble(tw.getDuration()));
@@ -313,7 +318,7 @@ public class InitializeEmployeeDetails {
 						        	   fb.setEmployeeId(e.getEmployeeId());
 						        	   System.out.println(e.getEmployeeId());
 									   fb.setEmployeeName(e.getEmployeeName());
-									   if(!m.getKey().toString().contains("ITCR-")){
+									   if(!(m.getKey().toString().contains("ITCR-") || m.getKey().toString().contains("DEF-"))){
 						        	   fb.setSubProjectId(m.getKey().toString().contains("_")?m.getKey().toString().split("_")[0]:"");
 						        	   fb.setSubProjectName(m.getKey().toString().contains("_")?m.getKey().toString().split("_")[1]:m.getKey().toString());
 						        	   System.out.println("++++++++++++++++++++++++++++++++"+m.getKey().toString());
@@ -419,6 +424,29 @@ public class InitializeEmployeeDetails {
 				 e.printStackTrace();
 			 }
 			return wbk;
+	}
+	
+	public HashMap<String, String> fillerProjectId(String filePath){
+		
+		HashMap<String,String> projectIdFiller=new HashMap<String,String>();  
+        Sheet sheet=null;
+		 try{ 
+	          XSSFWorkbook wbk = readDataExcel(filePath);
+	          sheet = wbk.getSheet("ProjectId");
+	         int rowCount = sheet.getLastRowNum();
+	       
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);      
+	          projectIdFiller.put(row.getCell(1).toString(), row.getCell(0).toString()); 
+	        
+	         } 
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		return projectIdFiller;	
+		
 	}
 	
 }
