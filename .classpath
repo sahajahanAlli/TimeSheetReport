@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/commons-collections4-4.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/commons-logging-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/junit-4.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/log4j-1.2.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/poi-3.17-beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/poi-examples-3.17-beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/poi-excelant-3.17-beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/poi-ooxml-3.17-beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/poi-ooxml-schemas-3.17-beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/poi-scratchpad-3.17-beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="F:/Timesheet/Timesheet/jars/xmlbeans-2.6.0.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/commons-codec-1.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/commons-logging-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/dom4j-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/poi-3.10-FINAL-20140208.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/poi-examples-3.10-FINAL-20140208.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/poi-excelant-3.10-FINAL-20140208.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/poi-ooxml-3.10-FINAL-20140208.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/poi-ooxml-schemas-3.10-FINAL-20140208.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/poi-scratchpad-3.10-FINAL-20140208.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/xmlbeans-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/commons-io-2.5/commons-io-2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/jars/commons-io-2.5/commons-io-2.5-javadoc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

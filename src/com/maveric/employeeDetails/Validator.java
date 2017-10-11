@@ -1,9 +1,13 @@
 package com.maveric.employeeDetails;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -13,16 +17,17 @@ import com.maveric.employeeDetails.InitializeEmployeeDetails;
 
 public class Validator {
 	
-	public HashMap<String, String> capitalisationValidator(String capitalisation){
+	public HashMap<String, String> capitalisationValidator(String capitalisation) throws IOException{
 		
 		  HashMap<String,String> capitalisationMap=new HashMap<String,String>(); 
 		  HashMap<String,String> SubjectMap=new HashMap<String,String>(); 
 	        Sheet sheet=null;
 	        ArrayList<String> alSubProject= new ArrayList<String>();
 	        ArrayList<String> alSubProjectCapitalisation= new ArrayList<String>();
+	        XSSFWorkbook wbk=null;
 	        
 	        try{ 
-				 XSSFWorkbook wbk = InitializeEmployeeDetails.readDataExcel(capitalisation);
+				  wbk = InitializeEmployeeDetails.readDataExcel(capitalisation);
 		          sheet = wbk.getSheet("timesheetdata");
 		         int rowCount = sheet.getLastRowNum();
 		         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
@@ -70,9 +75,19 @@ public class Validator {
 				 subProjectPresence=true;
 				 txtmissingSubProject="Missing Project names are below , Please add these projects in the capitalization Sheet : "+"\n";
 			 }
-			
+			int count=0;
+			int rowcount=sheet.getLastRowNum();
 			 for(String missingProjectname : alSubProject){
 				 txtmissingSubProject+=missingProjectname + "\n"; 
+				String subProjectId= missingProjectname.contains("-") && missingProjectname.contains("CH")?missingProjectname.split("-")[0]:"";
+				String subProjectName= missingProjectname.contains("-") && missingProjectname.contains("CH")?missingProjectname.split("-")[1]:missingProjectname;
+				 Row row=sheet.createRow(rowcount+count+1);
+				 Cell cell=row.createCell(0);
+				 cell.setCellValue(subProjectId);
+				 cell=row.createCell(1);
+				 cell.setCellValue(subProjectName);
+				 
+				 count++;
 			 }
 			 
 			 if(subProjectPresence){
@@ -81,21 +96,26 @@ public class Validator {
 				 System.out.println(txtmissingSubProject);
 			 }
 			 
+			 FileOutputStream os = new FileOutputStream(capitalisation);
+             wbk.write(os);
+             os.close();
+			 
 			return capitalisationMap;	
 		
 	}
 	
 	
-	public HashMap<String, String> employeeIdMapValidator(HashMap<String, String> empMap, String filePath){
+	public HashMap<String, String> employeeIdMapValidator(HashMap<String, String> empMap, String filePath) throws IOException{
 		
 	    HashMap<String,String> employeeInId_name_roleMapping=new HashMap<String,String>(); 
 	   // HashMap<String,String> employeeInConnectData=new HashMap<String,String>(); 
         Sheet sheet=null;
         ArrayList<String> alemployeeInConnectData= new ArrayList<String>();
         ArrayList<String> alEmployeeInMappingSheet= new ArrayList<String>();
+        XSSFWorkbook wbk=null;
         
 		 try{ 
-			 XSSFWorkbook wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
 	          sheet = wbk.getSheet("employee-name-id-role_mapping");
 	         int rowCount = sheet.getLastRowNum();
 	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
@@ -132,10 +152,23 @@ public class Validator {
 			 txtmissingEmp="Missing Employee names are below , Please add these projects in the id-role mapping Sheet : "+"\n";
 		 }
 		
+		 int count=0;
+		int rowcount=sheet.getLastRowNum();
 		 for(String missingemplyeeId : alemployeeInConnectData){
 			 
 			 txtmissingEmp+="Ëmployee Id : "+missingemplyeeId+ "   Name is : "+empMap.get(missingemplyeeId) + "\n"; 
+			 Row row=sheet.createRow(rowcount+count+1);
+			 Cell cell=row.createCell(0);
+			 cell.setCellValue(missingemplyeeId);
+			 cell=row.createCell(1);
+			 cell.setCellValue(empMap.get(missingemplyeeId));
+			 count++;
+			 
 		 }
+		 
+		 FileOutputStream os = new FileOutputStream(filePath);
+         wbk.write(os);
+         os.close();
 		 
 		 if(empPresence){
 			 WriteLog wLog=new WriteLog();

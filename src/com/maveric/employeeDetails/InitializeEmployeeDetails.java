@@ -320,8 +320,8 @@ public class InitializeEmployeeDetails {
 						        	   System.out.println(e.getEmployeeId());
 									   fb.setEmployeeName(e.getEmployeeName());
 									   if(!(m.getKey().toString().contains("ITCR-") || m.getKey().toString().contains("DEF-"))){
-						        	   fb.setSubProjectId(m.getKey().toString().contains("_")?m.getKey().toString().split("_")[0]:"");
-						        	   fb.setSubProjectName(m.getKey().toString().contains("_")?m.getKey().toString().split("_")[1]:m.getKey().toString());
+						        	   fb.setSubProjectId(m.getKey().toString().contains("-") && m.getKey().toString().contains("CH")?m.getKey().toString().split("-")[0]:"");
+						        	   fb.setSubProjectName(m.getKey().toString().contains("-") && m.getKey().toString().contains("CH")?m.getKey().toString().split("-")[1]:m.getKey().toString());
 						        	   System.out.println("++++++++++++++++++++++++++++++++"+m.getKey().toString());
 									   }else{
 										   fb.setSubProjectId("CH242");

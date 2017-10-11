@@ -12,6 +12,7 @@ import com.maveric.employeeDetails.FinalBillingClass;
 import com.maveric.employeeDetails.InitializeEmployeeDetails;
 import com.maveric.finalReport.CreateReportExcel;
 import com.maveric.employeeDetails.Validator;
+import com.maveric.employeeDetails.CreateBackUp;
 
 
 
@@ -40,7 +41,7 @@ public class GenerateReport {
 		if(errorLogFile.exists()){
 			errorLogFile.delete();
 		}
-		File f = new File(excelFilePath+"\\inputFiles");
+		File f = new File(excelFilePath+"\\BackUpFiles");
 		if(!f.isDirectory()){
 		System.out.println("Folder is not present.");
 		boolean success=f.mkdirs();
@@ -52,7 +53,10 @@ public class GenerateReport {
 		System.exit(1);
 		}
 		
-		String filePath=excelFilePath+"\\inputFiles\\"+args[0];
+		
+		CreateBackUp cb=new CreateBackUp();
+		System.out.println("Back up Status : "+cb.copyFiles());
+		String filePath=excelFilePath+"\\BackUpFiles\\"+args[0];
 		InitializeEmployeeDetails ied=new InitializeEmployeeDetails();
 		Validator validateDataExcel=new Validator();
 		HashMap<String, String> empMap = ied.createEmployeeMap(filePath, filePath);
