@@ -10,6 +10,7 @@ import java.util.Iterator;
 import com.maveric.employeeDetails.Employee;
 import com.maveric.employeeDetails.FinalBillingClass;
 import com.maveric.employeeDetails.InitializeEmployeeDetails;
+import com.maveric.employeeDetails.LoadProperties;
 import com.maveric.finalReport.CreateReportExcel;
 import com.maveric.employeeDetails.Validator;
 import com.maveric.employeeDetails.CreateBackUp;
@@ -23,6 +24,9 @@ public class GenerateReport {
 		System.out.println(" Report is Here ");
 		CreateReportExcel ce=new CreateReportExcel();
 		String excelFilePath=Paths.get(".").toAbsolutePath().normalize().toString();
+		
+		LoadProperties lp=new LoadProperties();
+		lp.readProperties();
 		
 		if(args.length == 0 ){
 			System.out.println("Type --help to se the details");
@@ -60,6 +64,7 @@ public class GenerateReport {
 		InitializeEmployeeDetails ied=new InitializeEmployeeDetails();
 		Validator validateDataExcel=new Validator();
 		HashMap<String, String> empMap = ied.createEmployeeMap(filePath, filePath);
+		System.out.println(ied.checkWorkingDays(filePath));
 		validateDataExcel.capitalisationValidator(filePath);
 		validateDataExcel.employeeIdMapValidator(empMap,filePath);
 		ArrayList<Employee> al=ied.createEmployeeDetails(empMap, filePath);

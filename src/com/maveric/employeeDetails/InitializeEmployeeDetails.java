@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import com.maveric.writeErrLog.WriteLog;
 
 public class InitializeEmployeeDetails {
@@ -44,105 +45,7 @@ public class InitializeEmployeeDetails {
 			return employeeKey;		 
 	}
 	
-	/*public HashMap<String, String> capitalisationValidator(HashMap<String, String> subProjectData,String capitalisation){
-		
-		  HashMap<String,String> capitalisationMap=new HashMap<String,String>();  
-	        Sheet sheet=null;
-			 try{ 
-				 XSSFWorkbook wbk = readDataExcel(capitalisation);
-		          sheet = wbk.getSheet("capitalisation");
-		         int rowCount = sheet.getLastRowNum();
-		         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
-		         for(int i=1;i<=rowCount;i++){
-		          Row row = sheet.getRow(i);     
-		          for (int j=0; j<colCount;j++){     
-		           capitalisationMap.put((row.getCell(0)!=null?(row.getCell(0)+"_"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
-		          }
-		         }
-
-		        }catch(Exception e){
-		               e.printStackTrace();
-		         }
-			 
-			 boolean subProjectPresence=false;
-			 String txtmissingSubProject="";
-			 for (Map.Entry m:subProjectData.entrySet()){
-				 if(!m.getKey().toString().contains("ITCR") || !m.getKey().toString().contains("ITCR ")){
-				 if(!capitalisationMap.containsKey(m.getKey())){
-					 subProjectPresence=true;
-					// System.out.println(" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue());
-					 txtmissingSubProject+=" Sub Project Details is absent in capitalisation : "+m.getKey() +"\n";
-				 }
-				}else{
-					 if(!capitalisationMap.containsKey(m.getKey())){
-						 subProjectPresence=true;
-						// System.out.println(" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue());
-						 txtmissingSubProject+=" Sub Project Details is absent in capitalisation : "+m.getKey() +"\n";
-					 }
-				}
-			 }
-			 
-			 if(subProjectPresence){
-				 WriteLog wLog=new WriteLog();
-				 wLog.createLogText(txtmissingSubProject);
-				 System.out.println(txtmissingSubProject);
-				 System.out.println("Please add these sub projects  in the capitalisation sheet.");
-				// System.exit(0);
-			 }
-			 
-			return capitalisationMap;	
-		
-	}*/
-	
-/*	public HashMap<String, String> employeeIdMapValidator(HashMap<String, String> empMap, String filePath){
-		
-	    HashMap<String,String> employeeKey=new HashMap<String,String>();  
-        Sheet sheet=null;
-		 try{ 
-			 XSSFWorkbook wbk = readDataExcel(filePath);
-	          sheet = wbk.getSheet("employee-name-id-role_mapping");
-	         int rowCount = sheet.getLastRowNum();
-	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
-	         for(int i=1;i<=rowCount;i++){
-	          Row row = sheet.getRow(i);     
-	          for (int j=0; j<colCount;j++){     
-	           employeeKey.put(row.getCell(0).toString(), row.getCell(1).toString()); 
-	          }
-	         }
-
-	        }catch(Exception e){
-	               e.printStackTrace();
-	         }
-		 
-		 if(empMap.size()!=employeeKey.size()){
-			 System.out.println("Number of employee in the sheets are not matching");
-		 }
-		 
-		 boolean empPresence=false;
-		 String txtmissingEmp="";
-		 for (Map.Entry m:empMap.entrySet()){
-			 if(!employeeKey.containsKey(m.getKey())){
-				 empPresence=true;
-				// System.out.println(" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue());
-				 txtmissingEmp+=" Employee Details is absent : "+m.getKey() +" Name is : "+m.getValue()+"\n";
-				
-			 }
-		 }
-		 
-		 if(empPresence){
-			 WriteLog wLog=new WriteLog();
-			 wLog.createLogText(txtmissingEmp);
-			 System.out.println(txtmissingEmp);
-			 System.out.println("Please add these people in the employee id mapping sheet.");
-			 System.exit(0);
-		 }
-		 
-		 
-		 
-		return employeeKey;		 
-}
-*/	
-	public ArrayList<Employee> createEmployeeDetails( HashMap<String,String> employeeKey,String filePath){
+		public ArrayList<Employee> createEmployeeDetails( HashMap<String,String> employeeKey,String filePath){
 		
 		 	ArrayList<Employee> al=new ArrayList<Employee>();
 	        Employee emp=null;
@@ -448,6 +351,36 @@ public class InitializeEmployeeDetails {
 		 
 		return projectIdFiller;	
 		
+	}
+	
+	
+	
+	public  ArrayList<WorkingDaysDetails>  checkWorkingDays(String filePath){
+		
+		Sheet sheet=null;
+		 ArrayList<WorkingDaysDetails> alwdd=new ArrayList<WorkingDaysDetails>();
+		 try{ 
+	          XSSFWorkbook wbk = readDataExcel(filePath);
+	          sheet = wbk.getSheet("WorkingDays");
+	         int rowCount = sheet.getLastRowNum();
+	         
+	        
+	         
+	         WorkingDaysDetails wdd=null;
+	       
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);   
+	          wdd=new WorkingDaysDetails();
+	          wdd.setMonthName(row.getCell(0).toString());
+	          wdd.setOnsiteWorkingDays(Integer.parseInt(row.getCell(1).toString()));
+	          wdd.setOffshoreWorkingDays(Integer.parseInt(row.getCell(2).toString()));
+	          alwdd.add(wdd);
+	         } 
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		return alwdd;
 	}
 	
 }
