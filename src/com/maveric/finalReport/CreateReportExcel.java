@@ -149,6 +149,7 @@ public class CreateReportExcel {
 		        	totalAmount=fb.getTotalOnsiteDays() * Double.parseDouble(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString())+"_"+fb.getLocation()));
 		        	 cell9.setCellValue(totalAmount);
 		        }else{
+		        	System.out.println(fb.getEmployeeId().toString()+"_"+fb.getLocation());
 	        	System.out.println(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString())+"_"+fb.getLocation()));
 		          //totalAmount=fb.getTotalOffshoreDays() * Double.parseDouble(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString()+"_"+fb.getEmployeeName().toString())+"_"+fb.getLocation()));
 		        	totalAmount=fb.getTotalOffshoreDays() * Double.parseDouble(rateMap.get(roleMappingMap.get(fb.getEmployeeId().toString())+"_"+fb.getLocation()));

@@ -70,7 +70,7 @@ public class GenerateReport {
 		ArrayList<Employee> al=ied.createEmployeeDetails(empMap, filePath);
 		ied.displayData(al);
 		ArrayList<FinalBillingClass> fbc=ied.checkAndValidateHours(al);
-		HashMap<String, String> projectIdFiller = ied.fillerProjectId( filePath);
+	//	HashMap<String, String> projectIdFiller = ied.fillerProjectId( filePath);
 		//Iterator<FinalBillingClass>  billing= fbc.iterator();
 		//FinalBillingClass fb=null;
 		HashMap<String, Double> capitalizarionMap = ied.createCapitalizationMap(filePath);

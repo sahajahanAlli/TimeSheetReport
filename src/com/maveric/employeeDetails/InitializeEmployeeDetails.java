@@ -144,6 +144,7 @@ public class InitializeEmployeeDetails {
 		 
 			while (employeeiterator.hasNext()) {
 				
+			//	double totalworkinghours=0;
 				String Finalmessage=null;
 				
 				subProject=new HashMap<String,String>(); 
@@ -178,6 +179,7 @@ public class InitializeEmployeeDetails {
 					}
 				  }
 					
+					
 					//onsite and offshore hours
 					//if(!tw.getSubProject().equals("")){
 					if(!tw.getActivity().equals("Holiday") && !tw.getActivity().equals("Leave") && !tw.getActivity().equals("Comp.Off") && !tw.getSubProject().equals("")){
@@ -200,6 +202,8 @@ public class InitializeEmployeeDetails {
 							}
 						
 					}
+					
+					//totalworkinghours+=Double.parseDouble(tw.getDuration());
 					}
 				}
 				 
@@ -330,7 +334,7 @@ public class InitializeEmployeeDetails {
 			return wbk;
 	}
 	
-	public HashMap<String, String> fillerProjectId(String filePath){
+	/*public HashMap<String, String> fillerProjectId(String filePath){
 		
 		HashMap<String,String> projectIdFiller=new HashMap<String,String>();  
         Sheet sheet=null;
@@ -351,7 +355,7 @@ public class InitializeEmployeeDetails {
 		 
 		return projectIdFiller;	
 		
-	}
+	}*/
 	
 	
 	
@@ -372,8 +376,8 @@ public class InitializeEmployeeDetails {
 	          Row row = sheet.getRow(i);   
 	          wdd=new WorkingDaysDetails();
 	          wdd.setMonthName(row.getCell(0).toString());
-	          wdd.setOnsiteWorkingDays(Integer.parseInt(row.getCell(1).toString()));
-	          wdd.setOffshoreWorkingDays(Integer.parseInt(row.getCell(2).toString()));
+	          wdd.setOnsiteWorkingDays(row.getCell(1).toString());
+	          wdd.setOffshoreWorkingDays(row.getCell(2).toString());
 	          alwdd.add(wdd);
 	         } 
 

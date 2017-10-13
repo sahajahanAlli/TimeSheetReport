@@ -3,8 +3,8 @@ package com.maveric.employeeDetails;
 public class WorkingDaysDetails {
 	
 	private String monthName;
-	private int onsiteWorkingDays;
-	private int offshoreWorkingDays;
+	private String onsiteWorkingDays;
+	private String offshoreWorkingDays;
 	
 	public String getMonthName() {
 		return monthName;
@@ -12,17 +12,17 @@ public class WorkingDaysDetails {
 	public void setMonthName(String monthName) {
 		this.monthName = monthName;
 	}
-	public int getOnsiteWorkingDays() {
+	public String getOnsiteWorkingDays() {
 		return onsiteWorkingDays;
 	}
-	public void setOnsiteWorkingDays(int onsiteWorkingDays) {
-		this.onsiteWorkingDays = onsiteWorkingDays;
+	public void setOnsiteWorkingDays(String string) {
+		this.onsiteWorkingDays = string;
 	}
-	public int getOffshoreWorkingDays() {
+	public String getOffshoreWorkingDays() {
 		return offshoreWorkingDays;
 	}
-	public void setOffshoreWorkingDays(int offshoreWorkingDays) {
-		this.offshoreWorkingDays = offshoreWorkingDays;
+	public void setOffshoreWorkingDays(String string) {
+		this.offshoreWorkingDays = string;
 	}
 	
 

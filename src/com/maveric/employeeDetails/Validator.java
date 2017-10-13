@@ -47,7 +47,7 @@ public class Validator {
 		         for(int i=1;i<=rowCount;i++){
 		          Row row = sheet.getRow(i);     
 		          for (int j=0; j<colCount;j++){     
-		           capitalisationMap.put((row.getCell(0)!=null?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
+		           capitalisationMap.put((row.getCell(0)!=null && row.getCell(0).toString()!="" ?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
 		          }
 		         }
 
@@ -67,6 +67,7 @@ public class Validator {
 			 System.out.println(alSubProject);*/
 			 
 			 alSubProject.removeAll(alSubProjectCapitalisation);
+			 System.out.println(alSubProject);
 			 
 			 boolean subProjectPresence=false;
 			 String txtmissingSubProject="";
@@ -156,7 +157,7 @@ public class Validator {
 		int rowcount=sheet.getLastRowNum();
 		 for(String missingemplyeeId : alemployeeInConnectData){
 			 
-			 txtmissingEmp+="Ëmployee Id : "+missingemplyeeId+ "   Name is : "+empMap.get(missingemplyeeId) + "\n"; 
+			 txtmissingEmp+="ï¿½mployee Id : "+missingemplyeeId+ "   Name is : "+empMap.get(missingemplyeeId) + "\n"; 
 			 Row row=sheet.createRow(rowcount+count+1);
 			 Cell cell=row.createCell(0);
 			 cell.setCellValue(missingemplyeeId);
