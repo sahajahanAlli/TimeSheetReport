@@ -35,7 +35,7 @@ public class Validator {
 		          Row row = sheet.getRow(i);     
 		          for (int j=0; j<colCount;j++){     
 		           if(row.getCell(6).toString()!=null && row.getCell(6).toString()!=""){
-		        	   SubjectMap.put(row.getCell(6).toString(), row.getCell(1).toString());
+		        	   SubjectMap.put(row.getCell(6).toString().contains("CH") && row.getCell(6).toString().contains("-")?row.getCell(6).toString().split("-")[1]:row.getCell(6).toString(), row.getCell(1).toString());
 		           }
 		          }
 		         }
@@ -47,7 +47,8 @@ public class Validator {
 		         for(int i=1;i<=rowCount;i++){
 		          Row row = sheet.getRow(i);     
 		          for (int j=0; j<colCount;j++){     
-		           capitalisationMap.put((row.getCell(0)!=null && row.getCell(0).toString()!="" ?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
+		         //  capitalisationMap.put((row.getCell(0)!=null && row.getCell(0).toString()!="" ?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
+		        	  capitalisationMap.put(row.getCell(1).toString(), row.getCell(2).toString());
 		          }
 		         }
 
