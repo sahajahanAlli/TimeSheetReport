@@ -35,7 +35,7 @@ public class Validator {
 		          Row row = sheet.getRow(i);     
 		          for (int j=0; j<colCount;j++){     
 		           if(row.getCell(6).toString()!=null && row.getCell(6).toString()!=""){
-		        	   SubjectMap.put(row.getCell(6).toString(), row.getCell(1).toString());
+		        	   SubjectMap.put(row.getCell(6).toString().contains("CH") && row.getCell(6).toString().contains("-")?row.getCell(6).toString().split("-")[1]:row.getCell(6).toString(), row.getCell(1).toString());
 		           }
 		          }
 		         }
@@ -47,7 +47,8 @@ public class Validator {
 		         for(int i=1;i<=rowCount;i++){
 		          Row row = sheet.getRow(i);     
 		          for (int j=0; j<colCount;j++){     
-		           capitalisationMap.put((row.getCell(0)!=null && row.getCell(0).toString()!="" ?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
+		         //  capitalisationMap.put((row.getCell(0)!=null && row.getCell(0).toString()!="" ?(row.getCell(0)+"-"):"")+row.getCell(1).toString(), row.getCell(2).toString()); 
+		        	  capitalisationMap.put(row.getCell(1).toString(), row.getCell(2).toString());
 		          }
 		         }
 
@@ -157,7 +158,7 @@ public class Validator {
 		int rowcount=sheet.getLastRowNum();
 		 for(String missingemplyeeId : alemployeeInConnectData){
 			 
-			 txtmissingEmp+="�mployee Id : "+missingemplyeeId+ "   Name is : "+empMap.get(missingemplyeeId) + "\n"; 
+			 txtmissingEmp+="Employee Id : "+missingemplyeeId+ "   Name is : "+empMap.get(missingemplyeeId) + "\n"; 
 			 Row row=sheet.createRow(rowcount+count+1);
 			 Cell cell=row.createCell(0);
 			 cell.setCellValue(missingemplyeeId);
@@ -181,6 +182,100 @@ public class Validator {
 		 
 		 
 		return employeeInId_name_roleMapping;		 
+}
+
+	
+public ArrayList<String> rateRoleMappingValidator( String filePath) throws IOException{
+		
+	    HashMap<String,Integer> rolesInEmployeeIdRoleMappingSheet=new HashMap<String,Integer>();
+	    HashMap<String,Integer> roleInRoleRateMappingSheet=new HashMap<String,Integer>(); 
+        Sheet sheet=null;
+        ArrayList<String> alrolesInEmployeeIdRoleMappingSheet= new ArrayList<String>();
+        ArrayList<String> alroleInRoleRateMappingSheet= new ArrayList<String>();
+        XSSFWorkbook wbk=null;
+        
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("employee-name-id-role_mapping");
+	         int rowCount = sheet.getLastRowNum();
+	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);     
+	          for (int j=0; j<colCount;j++){     
+	        	  rolesInEmployeeIdRoleMappingSheet.put(row.getCell(2).toString(), 0); 
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		 
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("employee_rates");
+	         int rowCount = sheet.getLastRowNum();
+	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);     
+	          for (int j=0; j<colCount;j++){     
+	        	  roleInRoleRateMappingSheet.put(row.getCell(0).toString(), 0); 
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		 alrolesInEmployeeIdRoleMappingSheet.addAll(rolesInEmployeeIdRoleMappingSheet.keySet());
+		 alroleInRoleRateMappingSheet.addAll(roleInRoleRateMappingSheet.keySet());
+		 boolean rolePeresence=false;
+		 String txtmissingEmp="";
+		 
+		 System.out.println(alrolesInEmployeeIdRoleMappingSheet);
+		 System.out.println(alroleInRoleRateMappingSheet);
+		
+		 
+		/* System.out.println(alemployeeInConnectData);
+		 System.out.println(alEmployeeInMappingSheet);
+		 
+		 System.out.println("Differenece is : ");
+		 
+		 System.out.println();
+		 
+		 System.out.println(alemployeeInConnectData);*/
+		 
+		 alrolesInEmployeeIdRoleMappingSheet.removeAll(alroleInRoleRateMappingSheet);
+		 
+		 if(alrolesInEmployeeIdRoleMappingSheet.size()>0){
+			 rolePeresence=true;
+			 txtmissingEmp="Missing Employee Roles are below , Please add these projects in the employee rates sheet : "+"\n";
+		 }
+		
+		 int count=0;
+		int rowcount=sheet.getLastRowNum();
+		 for(String missingemplyeerole : alrolesInEmployeeIdRoleMappingSheet){
+			 Row row=sheet.createRow(rowcount+count+1);
+			 Cell cell=row.createCell(0);
+			 cell.setCellValue(missingemplyeerole);
+			 count++;
+			 
+		 }
+		 
+		 FileOutputStream os = new FileOutputStream(filePath);
+         wbk.write(os);
+         os.close();
+		 
+		 if(rolePeresence){
+			 WriteLog wLog=new WriteLog();
+			 wLog.createLogText(txtmissingEmp);
+			 System.out.println(txtmissingEmp);
+			// System.exit(0);
+		 }
+		 
+		 
+		 
+		return alrolesInEmployeeIdRoleMappingSheet;		 
 }
 
 

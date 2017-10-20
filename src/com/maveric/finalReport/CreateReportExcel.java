@@ -165,27 +165,27 @@ public class CreateReportExcel {
 		        cell12 = row.createCell(12);
 		        System.out.println(fb.getSubProjectName());
 		        System.out.println("888888888888888888888"+fb.getSubProjectName());
-		        cell12.setCellValue(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]));
+		        cell12.setCellValue(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0]));
 		        
 		        cell13 = row.createCell(13);
-		        cell13.setCellValue( (totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100));
+		        cell13.setCellValue( (totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0])/100));
 		        
 		        cell14 = row.createCell(14);
-		        cell14.setCellValue( (totalAmount*(100-0)/100)*((100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]))/100));
+		        cell14.setCellValue( (totalAmount*(100-0)/100)*((100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0]))/100));
 		        
 		        // total Capitalisable + Non Capitalisable without tax
 		        cell15 = row.createCell(15);
-		        cell15.setCellValue((totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100)+(totalAmount*(100-0)/100)*((100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]))/100));
+		        cell15.setCellValue((totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0])/100)+(totalAmount*(100-0)/100)*((100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0]))/100));
 		        
 		        cell16 = row.createCell(16);
-		        cell16.setCellValue( (totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100)*(120.00/100));
+		        cell16.setCellValue( (totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0])/100)*(120.00/100));
 		        
 		        cell17 = row.createCell(17);
-		        cell17.setCellValue( (totalAmount*(100-0)/100)*(100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]))/100*(120.00/100));
+		        cell17.setCellValue( (totalAmount*(100-0)/100)*(100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0]))/100*(120.00/100));
 		     
 		        // total Capitalisable + Non Capitalisable with tax
 		        cell18 = row.createCell(18);
-		        cell18.setCellValue( (totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0])/100)*(120.00/100)+ (totalAmount*(100-0)/100)*(100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0]))/100*(120.00/100));
+		        cell18.setCellValue( (totalAmount*(100-0)/100)*(capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0])/100)*(120.00/100)+ (totalAmount*(100-0)/100)*(100-capitalizarionMap.get(fb.getSubProjectName().split("\\.")[0].contains("CH") && fb.getSubProjectName().split("\\.")[0].contains("-")?fb.getSubProjectName().split("\\.")[0].split("-")[1]:fb.getSubProjectName().split("\\.")[0]))/100*(120.00/100));
 		        
 		        cell19 = row.createCell(19);
 		        cell19.setCellValue(fb.getErrMessage());
