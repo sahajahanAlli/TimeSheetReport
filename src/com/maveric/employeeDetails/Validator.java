@@ -17,6 +17,8 @@ import com.maveric.employeeDetails.InitializeEmployeeDetails;
 
 public class Validator {
 	
+	
+	
 	public HashMap<String, String> capitalisationValidator(String capitalisation) throws IOException{
 		
 		  HashMap<String,String> capitalisationMap=new HashMap<String,String>(); 
@@ -158,7 +160,7 @@ public class Validator {
 		int rowcount=sheet.getLastRowNum();
 		 for(String missingemplyeeId : alemployeeInConnectData){
 			 
-			 txtmissingEmp+="�mployee Id : "+missingemplyeeId+ "   Name is : "+empMap.get(missingemplyeeId) + "\n"; 
+			 txtmissingEmp+="Employee Id : "+missingemplyeeId+ "   Name is : "+empMap.get(missingemplyeeId) + "\n"; 
 			 Row row=sheet.createRow(rowcount+count+1);
 			 Cell cell=row.createCell(0);
 			 cell.setCellValue(missingemplyeeId);
@@ -184,5 +186,171 @@ public class Validator {
 		return employeeInId_name_roleMapping;		 
 }
 
+	
+public ArrayList<String> rateRoleMappingValidator( String filePath) throws IOException{
+		
+	    HashMap<String,Integer> rolesInEmployeeIdRoleMappingSheet=new HashMap<String,Integer>();
+	    HashMap<String,Integer> roleInRoleRateMappingSheet=new HashMap<String,Integer>(); 
+        Sheet sheet=null;
+        ArrayList<String> alrolesInEmployeeIdRoleMappingSheet= new ArrayList<String>();
+        ArrayList<String> alroleInRoleRateMappingSheet= new ArrayList<String>();
+        XSSFWorkbook wbk=null;
+        
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("employee-name-id-role_mapping");
+	         int rowCount = sheet.getLastRowNum();
+	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);     
+	          for (int j=0; j<colCount;j++){     
+	        	  rolesInEmployeeIdRoleMappingSheet.put(row.getCell(2).toString(), 0); 
+	          }
+	         }
 
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		 
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("employee_rates");
+	         int rowCount = sheet.getLastRowNum();
+	         int colCount = sheet.getRow(1).getPhysicalNumberOfCells();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);     
+	          for (int j=0; j<colCount;j++){     
+	        	  roleInRoleRateMappingSheet.put(row.getCell(0).toString(), 0); 
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		 alrolesInEmployeeIdRoleMappingSheet.addAll(rolesInEmployeeIdRoleMappingSheet.keySet());
+		 alroleInRoleRateMappingSheet.addAll(roleInRoleRateMappingSheet.keySet());
+		 boolean rolePeresence=false;
+		 String txtmissingEmp="";
+		 
+		 System.out.println(alrolesInEmployeeIdRoleMappingSheet);
+		 System.out.println(alroleInRoleRateMappingSheet);
+		 
+		 alrolesInEmployeeIdRoleMappingSheet.removeAll(alroleInRoleRateMappingSheet);
+		 
+		 if(alrolesInEmployeeIdRoleMappingSheet.size()>0){
+			 rolePeresence=true;
+			 txtmissingEmp="Missing Employee Roles are below , Please add these projects in the employee rates sheet : "+"\n";
+		 }
+		
+		 int count=0;
+		int rowcount=sheet.getLastRowNum();
+		 for(String missingemplyeerole : alrolesInEmployeeIdRoleMappingSheet){
+			 Row row=sheet.createRow(rowcount+count+1);
+			 Cell cell=row.createCell(0);
+			 cell.setCellValue(missingemplyeerole);
+			 count++;
+			 
+		 }
+		 
+		 FileOutputStream os = new FileOutputStream(filePath);
+         wbk.write(os);
+         os.close();
+		 
+		 if(rolePeresence){
+			 WriteLog wLog=new WriteLog();
+			 wLog.createLogText(txtmissingEmp);
+			 System.out.println(txtmissingEmp);
+		 }
+		 
+		 
+		 
+		return alrolesInEmployeeIdRoleMappingSheet;		 
+}
+
+public ArrayList<String> subprojectValidator(String filePath){
+	
+	  Sheet sheet=null;
+      ArrayList<String> txtMissingProject= new ArrayList<String>();
+      XSSFWorkbook wbk=null;
+      
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("timesheetdata");
+	         int rowCount = sheet.getLastRowNum();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);       
+	        	  if(!(row.getCell(8).toString().equals("Holiday") || row.getCell(8).toString().equals("Leave") || row.getCell(8).toString().equals("Comp.Off") || row.getCell(8).toString().equals("Bench") ||row.getCell(8).toString().equals("Knowledge transfer") || row.getCell(8).toString().equals("Travel Arrival") || row.getCell(8).toString().equals("Travel Departure"))){
+	        		  if(row.getCell(6).toString() == null || row.getCell(6).toString()== ""){
+	        			  txtMissingProject.add(" Employee ID : "+row.getCell(1).toString()+ " Name : "+row.getCell(2).toString() +" has missing subproject on date "+row.getCell(11).toString()+"\n");
+	        		  }
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		WriteLog.createLogTextArray(txtMissingProject,"NullSubProjectReport");
+	
+	return txtMissingProject;
+	
+}
+
+public ArrayList<String> rejectTimeSheetValidator(String filePath){
+	
+	 Sheet sheet=null;
+     ArrayList<String> txtRejectedTimedata= new ArrayList<String>();
+     XSSFWorkbook wbk=null;
+     
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("timesheetdata");
+	         int rowCount = sheet.getLastRowNum();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);         
+	        	  if(!(row.getCell(8).toString().equals("Holiday") || row.getCell(8).toString().equals("Leave") || row.getCell(8).toString().equals("Comp.Off") || row.getCell(8).toString().equals("Bench") ||row.getCell(8).toString().equals("Knowledge transfer") || row.getCell(8).toString().equals("Travel Arrival") || row.getCell(8).toString().equals("Travel Departure"))){
+	        		  if(row.getCell(13).toString().equals("Rejected")){
+	        			  txtRejectedTimedata.add(" Employee ID : "+row.getCell(1).toString()+ " Name : "+row.getCell(2).toString() +" timesheet has been rejected on "+row.getCell(11).toString()+"\n");
+	        		  }
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		WriteLog.createLogTextArray(txtRejectedTimedata ,"RejectTimeData");
+	
+	return txtRejectedTimedata;
+}
+
+public ArrayList<String> EffortHoursValidator(String filePath){
+	
+	 Sheet sheet=null;
+    ArrayList<String> txtEffortHoursValidator= new ArrayList<String>();
+    XSSFWorkbook wbk=null;
+    
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("timesheetdata");
+	         int rowCount = sheet.getLastRowNum();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);         
+	        	  if(!(row.getCell(8).toString().equals("Holiday") || row.getCell(8).toString().equals("Leave") || row.getCell(8).toString().equals("Comp.Off") || row.getCell(8).toString().equals("Bench") ||row.getCell(8).toString().equals("Knowledge transfer") || row.getCell(8).toString().equals("Travel Arrival") || row.getCell(8).toString().equals("Travel Departure"))){
+	        		  if(Double.parseDouble(row.getCell(12).toString()) % 2 != 0){
+	        			  txtEffortHoursValidator.add(" Employee ID : "+row.getCell(1).toString()+ " Name : "+row.getCell(2).toString() +" Filled odd hours on "+row.getCell(11).toString()+ " Entered effor hour is "+row.getCell(12).toString()+"\n");
+	        		  }
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		WriteLog.createLogTextArray(txtEffortHoursValidator,"EvenOddHoursValidator");
+	
+	return txtEffortHoursValidator;
+}
 }

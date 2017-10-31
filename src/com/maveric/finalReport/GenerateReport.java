@@ -64,9 +64,13 @@ public class GenerateReport {
 		InitializeEmployeeDetails ied=new InitializeEmployeeDetails();
 		Validator validateDataExcel=new Validator();
 		HashMap<String, String> empMap = ied.createEmployeeMap(filePath, filePath);
-		System.out.println(ied.checkWorkingDays(filePath));
+		//System.out.println(ied.checkWorkingDays(filePath));
 		validateDataExcel.capitalisationValidator(filePath);
 		validateDataExcel.employeeIdMapValidator(empMap,filePath);
+		validateDataExcel.rateRoleMappingValidator( filePath);
+		validateDataExcel.subprojectValidator(filePath);
+		validateDataExcel.rejectTimeSheetValidator(filePath);
+		validateDataExcel.EffortHoursValidator(filePath);
 		ArrayList<Employee> al=ied.createEmployeeDetails(empMap, filePath);
 		ied.displayData(al);
 		ArrayList<FinalBillingClass> fbc=ied.checkAndValidateHours(al);
