@@ -68,6 +68,9 @@ public class GenerateReport {
 		validateDataExcel.capitalisationValidator(filePath);
 		validateDataExcel.employeeIdMapValidator(empMap,filePath);
 		validateDataExcel.rateRoleMappingValidator( filePath);
+		validateDataExcel.subprojectValidator(filePath);
+		validateDataExcel.rejectTimeSheetValidator(filePath);
+		validateDataExcel.EffortHoursValidator(filePath);
 		ArrayList<Employee> al=ied.createEmployeeDetails(empMap, filePath);
 		ied.displayData(al);
 		ArrayList<FinalBillingClass> fbc=ied.checkAndValidateHours(al);

@@ -17,6 +17,8 @@ import com.maveric.employeeDetails.InitializeEmployeeDetails;
 
 public class Validator {
 	
+	
+	
 	public HashMap<String, String> capitalisationValidator(String capitalisation) throws IOException{
 		
 		  HashMap<String,String> capitalisationMap=new HashMap<String,String>(); 
@@ -234,16 +236,6 @@ public ArrayList<String> rateRoleMappingValidator( String filePath) throws IOExc
 		 
 		 System.out.println(alrolesInEmployeeIdRoleMappingSheet);
 		 System.out.println(alroleInRoleRateMappingSheet);
-		
-		 
-		/* System.out.println(alemployeeInConnectData);
-		 System.out.println(alEmployeeInMappingSheet);
-		 
-		 System.out.println("Differenece is : ");
-		 
-		 System.out.println();
-		 
-		 System.out.println(alemployeeInConnectData);*/
 		 
 		 alrolesInEmployeeIdRoleMappingSheet.removeAll(alroleInRoleRateMappingSheet);
 		 
@@ -270,7 +262,6 @@ public ArrayList<String> rateRoleMappingValidator( String filePath) throws IOExc
 			 WriteLog wLog=new WriteLog();
 			 wLog.createLogText(txtmissingEmp);
 			 System.out.println(txtmissingEmp);
-			// System.exit(0);
 		 }
 		 
 		 
@@ -278,5 +269,88 @@ public ArrayList<String> rateRoleMappingValidator( String filePath) throws IOExc
 		return alrolesInEmployeeIdRoleMappingSheet;		 
 }
 
+public ArrayList<String> subprojectValidator(String filePath){
+	
+	  Sheet sheet=null;
+      ArrayList<String> txtMissingProject= new ArrayList<String>();
+      XSSFWorkbook wbk=null;
+      
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("timesheetdata");
+	         int rowCount = sheet.getLastRowNum();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);       
+	        	  if(!(row.getCell(8).toString().equals("Holiday") || row.getCell(8).toString().equals("Leave") || row.getCell(8).toString().equals("Comp.Off") || row.getCell(8).toString().equals("Bench") ||row.getCell(8).toString().equals("Knowledge transfer") || row.getCell(8).toString().equals("Travel Arrival") || row.getCell(8).toString().equals("Travel Departure"))){
+	        		  if(row.getCell(6).toString() == null || row.getCell(6).toString()== ""){
+	        			  txtMissingProject.add(" Employee ID : "+row.getCell(1).toString()+ " Name : "+row.getCell(2).toString() +" has missing subproject on date "+row.getCell(11).toString()+"\n");
+	        		  }
+	          }
+	         }
 
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		WriteLog.createLogTextArray(txtMissingProject,"NullSubProjectReport");
+	
+	return txtMissingProject;
+	
+}
+
+public ArrayList<String> rejectTimeSheetValidator(String filePath){
+	
+	 Sheet sheet=null;
+     ArrayList<String> txtRejectedTimedata= new ArrayList<String>();
+     XSSFWorkbook wbk=null;
+     
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("timesheetdata");
+	         int rowCount = sheet.getLastRowNum();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);         
+	        	  if(!(row.getCell(8).toString().equals("Holiday") || row.getCell(8).toString().equals("Leave") || row.getCell(8).toString().equals("Comp.Off") || row.getCell(8).toString().equals("Bench") ||row.getCell(8).toString().equals("Knowledge transfer") || row.getCell(8).toString().equals("Travel Arrival") || row.getCell(8).toString().equals("Travel Departure"))){
+	        		  if(row.getCell(13).toString().equals("Rejected")){
+	        			  txtRejectedTimedata.add(" Employee ID : "+row.getCell(1).toString()+ " Name : "+row.getCell(2).toString() +" timesheet has been rejected on "+row.getCell(11).toString()+"\n");
+	        		  }
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		WriteLog.createLogTextArray(txtRejectedTimedata ,"RejectTimeData");
+	
+	return txtRejectedTimedata;
+}
+
+public ArrayList<String> EffortHoursValidator(String filePath){
+	
+	 Sheet sheet=null;
+    ArrayList<String> txtEffortHoursValidator= new ArrayList<String>();
+    XSSFWorkbook wbk=null;
+    
+		 try{ 
+			  wbk = InitializeEmployeeDetails.readDataExcel(filePath);
+	          sheet = wbk.getSheet("timesheetdata");
+	         int rowCount = sheet.getLastRowNum();
+	         for(int i=1;i<=rowCount;i++){
+	          Row row = sheet.getRow(i);         
+	        	  if(!(row.getCell(8).toString().equals("Holiday") || row.getCell(8).toString().equals("Leave") || row.getCell(8).toString().equals("Comp.Off") || row.getCell(8).toString().equals("Bench") ||row.getCell(8).toString().equals("Knowledge transfer") || row.getCell(8).toString().equals("Travel Arrival") || row.getCell(8).toString().equals("Travel Departure"))){
+	        		  if(Double.parseDouble(row.getCell(12).toString()) % 2 != 0){
+	        			  txtEffortHoursValidator.add(" Employee ID : "+row.getCell(1).toString()+ " Name : "+row.getCell(2).toString() +" Filled odd hours on "+row.getCell(11).toString()+ " Entered effor hour is "+row.getCell(12).toString()+"\n");
+	        		  }
+	          }
+	         }
+
+	        }catch(Exception e){
+	               e.printStackTrace();
+	         }
+		 
+		WriteLog.createLogTextArray(txtEffortHoursValidator,"EvenOddHoursValidator");
+	
+	return txtEffortHoursValidator;
+}
 }
